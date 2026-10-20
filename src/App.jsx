@@ -4,10 +4,8 @@ import ServicesJourney from './components/ServicesJourney.jsx'
 import SiteHeader from './components/SiteHeader.jsx'
 import {
   AboutSection,
-  CapabilityDirectory,
   ContactSection,
   DifferentiatorsSection,
-  FaqPreview,
   FaqSection,
   LegalPage,
   NotFoundPage,
@@ -166,10 +164,6 @@ function HomePage({ onNavigate }) {
 
       <AboutSection />
       <DifferentiatorsSection />
-      <CapabilityDirectory />
-      <ProcessSection />
-      <PortfolioSection />
-      <FaqPreview />
       <ContactSection />
       <SiteFooter onNavigate={onNavigate} />
     </main>
