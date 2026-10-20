@@ -181,23 +181,41 @@ export function ContactSection({ page = false, showDetails = false }) {
   )
 }
 
-export function ServiceCatalog() {
+function ServiceCatalogCard({ service, onNavigate }) {
+  const href = `/${service.slug}`
+
+  return (
+    <a className="catalog-card" href={href} onClick={(event) => onNavigate?.(event, href)}>
+      <div className={`catalog-card__visual catalog-card__visual--${service.heroVisual || service.visual}`} aria-hidden="true">
+        <ServiceArtwork type={service.heroVisual || service.visual} />
+        <span className="catalog-card__visual-label">DigiWeb Care / Service</span>
+      </div>
+      <div className="catalog-card__body">
+        <div className="catalog-card__meta">
+          <span className="eyebrow">Published price</span>
+          <span className="catalog-card__price">{service.price}</span>
+        </div>
+        <h3 className="catalog-card__title">{service.name}</h3>
+        <p className="catalog-card__description">{service.scope}</p>
+        <span className="catalog-card__action">Explore service <span aria-hidden="true">↗</span></span>
+      </div>
+    </a>
+  )
+}
+
+export function ServiceCatalog({ onNavigate }) {
   return (
     <section className="catalog-section" aria-labelledby="catalog-title">
       <div className="section-heading section-heading--split">
         <div>
-          <p className="eyebrow">Service catalog / Price list</p>
+          <p className="eyebrow">Service catalog</p>
           <h2 id="catalog-title">The details matter.</h2>
         </div>
         <p>Published prices are shown in US dollars where available. Custom scopes and final billing terms should be confirmed with DigiWeb Care.</p>
       </div>
-      <div className="catalog-list">
+      <div className="catalog-grid">
         {serviceCatalog.map((service) => (
-          <article className="catalog-row" key={service.name}>
-            <h3><a href={`/${service.slug}`}>{service.name}</a></h3>
-            <p>{service.scope}</p>
-            <b>{service.price}</b>
-          </article>
+          <ServiceCatalogCard key={service.name} service={service} onNavigate={onNavigate} />
         ))}
       </div>
       <p className="catalog-note">Third-party costs such as advertising spend, hosting, domains, premium plugins or themes, stock media, and government or registry filing fees may be separate. Custom quotes require a conversation about scope.</p>
@@ -289,11 +307,11 @@ export function ServiceDetailPage({ service, onNavigate }) {
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/service" onNavigate={onNavigate} />
       <main className="page-content">
-        <PageHero eyebrow={`Service / ${brand.name}`} title={service.name} lede={service.headline} visual={service.heroVisual || service.visual} />
         <section className="service-detail" aria-labelledby="service-detail-title">
           <div className="service-detail__intro">
-            <p className="eyebrow">What this covers</p>
-            <h2 id="service-detail-title">{service.headline}</h2>
+            <p className="eyebrow">{brand.displayName} / Service</p>
+            <h1 id="service-detail-title">{service.name}</h1>
+            <p className="service-detail__headline">{service.headline}</p>
             {service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             <a className="button button--primary" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}&body=${encodeURIComponent(`Hello DigiWeb Care,\n\nI would like to discuss ${service.name}.\n\n`)}`}>
               {service.cta || 'Discuss this service'} <span aria-hidden="true">↗</span>
@@ -312,27 +330,39 @@ export function ServiceDetailPage({ service, onNavigate }) {
             {service.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
           </ul>
         </section>
-        {service.packages.length > 0 && (
-          <section className="service-packages" aria-labelledby="service-packages-title">
-            <div className="section-heading section-heading--split">
-              <div>
-                <p className="eyebrow">Published packages</p>
-                <h2 id="service-packages-title">Choose the right starting point.</h2>
-              </div>
-              <p>Prices reflect the published DigiWeb Care pages and should be confirmed before purchase.</p>
+        <section className="service-packages" aria-labelledby="service-packages-title">
+          <div className="section-heading section-heading--split">
+            <div>
+              <p className="eyebrow">Published packages</p>
+              <h2 id="service-packages-title">Choose the right starting point</h2>
             </div>
-            <div className="service-packages__list">
+            <p>Published prices and package details are shown as listed. Contact DigiWeb Care to confirm the current scope and terms.</p>
+          </div>
+          {service.packages.length > 0 ? (
+            <div className={`service-packages__list${service.packages.length === 1 ? ' service-packages__list--single' : ''}`}>
               {service.packages.map((item) => (
                 <article key={item.name}>
-                  <span className="eyebrow">{item.price}</span>
                   <h3>{item.name}</h3>
-                  <ul>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+                  <p className="service-packages__price">{item.price}</p>
+                  <ul aria-label={`${item.name} features`}>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
                   <a className="button button--outline" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${item.name} request`)}&body=${encodeURIComponent(`Hello DigiWeb Care,\n\nI would like to request more information about ${item.name} (${item.price}) under ${service.name}.\n\n`)}`}>Request this package <span aria-hidden="true">↗</span></a>
                 </article>
               ))}
             </div>
-          </section>
-        )}
+          ) : (
+            <div className="service-packages__enquiry">
+              <div>
+                <p className="eyebrow">Published pricing</p>
+                <p className="service-packages__price">{service.price}</p>
+              </div>
+              <div>
+                <h3>Discuss this service</h3>
+                <p>The published page lists a consultation rather than a priced package.</p>
+              </div>
+              <a className="button button--outline" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}`}>{service.cta || 'Enquire about this service'} <span aria-hidden="true">↗</span></a>
+            </div>
+          )}
+        </section>
         <ContactSection page />
       </main>
       <SiteFooter onNavigate={onNavigate} />

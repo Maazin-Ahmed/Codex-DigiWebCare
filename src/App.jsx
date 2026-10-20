@@ -199,7 +199,7 @@ function ServicesPage({ onNavigate }) {
       <SiteHeader currentPath="/service" onNavigate={onNavigate} />
       <main className="page-content">
         <PageHero eyebrow="Services / DigiWeb Care" title="Services with a clear scope." lede="Explore digital marketing, technology, ecommerce, Amazon, advertising, and consulting services." visual="cloud" />
-        <ServiceCatalog />
+        <ServiceCatalog onNavigate={onNavigate} />
         <ProcessSection />
         <ContactSection page />
       </main>
