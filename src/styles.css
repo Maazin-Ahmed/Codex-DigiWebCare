@@ -2084,7 +2084,7 @@ body.menu-is-open {
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   gap: clamp(36px, 7vw, 100px);
   align-items: center;
-  padding: clamp(76px, 8vw, 122px) max(32px, calc((100vw - 1440px) / 2));
+  padding: clamp(64px, 6vw, 92px) max(32px, calc((100vw - 1440px) / 2));
   color: var(--bone);
   background: #0c151f;
 }
@@ -2170,8 +2170,8 @@ body.menu-is-open {
   background: var(--bone);
 }
 
-.service-detail__benefits { padding-bottom: clamp(28px, 3vw, 46px); }
-.service-packages { padding-top: clamp(38px, 4vw, 60px); }
+.service-detail__benefits { padding-bottom: clamp(24px, 2.2vw, 34px); }
+.service-packages { padding-top: clamp(30px, 3vw, 44px); }
 
 .service-detail__benefits ul {
   display: grid;
@@ -2198,13 +2198,13 @@ body.menu-is-open {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
   gap: 18px;
-  margin-top: 44px;
+  margin-top: clamp(28px, 2.5vw, 36px);
   align-items: stretch;
 }
 
 .service-packages .section-heading h2 { max-width: 760px; margin-bottom: 18px; font-size: clamp(2.8rem, 5vw, 5.2rem); line-height: 0.94; }
 .service-packages .section-heading--split > p { max-width: 390px; margin: 0 0 4px; color: rgba(9, 11, 13, 0.64); font-size: 0.9rem; line-height: 1.55; }
-.service-packages__list--single { grid-template-columns: minmax(0, 520px); justify-content: center; }
+.service-packages__list--single { grid-template-columns: minmax(0, 520px); justify-content: start; }
 
 .service-packages__list article,
 .service-packages__enquiry {
@@ -2279,9 +2279,27 @@ body.menu-is-open {
 @media (max-width: 900px) {
   .service-detail,
   .payment-state,
-  .not-found-section { grid-template-columns: 1fr; padding: 84px 20px; }
+  .not-found-section { grid-template-columns: 1fr; padding: 68px 20px; }
   .service-detail__visual,
   .payment-state__mark { width: min(100%, 560px); justify-self: start; }
+  .service-art--advertising {
+    display: grid;
+    grid-template-rows: 48px repeat(2, minmax(0, 1fr));
+    gap: clamp(14px, 3vw, 24px);
+    padding: clamp(18px, 6%, 40px) clamp(18px, 8%, 56px);
+  }
+  .service-art--advertising .service-art__result {
+    width: 100%;
+    min-height: 0;
+    margin-top: 0;
+    padding: clamp(12px, 3vw, 18px) clamp(14px, 4vw, 20px);
+    align-content: center;
+    gap: clamp(4px, 1vw, 7px);
+  }
+  .service-art--advertising .service-art__result b {
+    font-size: clamp(1.1rem, 4.5vw, 2rem);
+    line-height: 1.05;
+  }
   .service-detail__benefits { padding: 68px 20px 28px; }
   .service-packages { padding: 38px 20px 78px; }
   .service-detail__benefits ul { grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
@@ -2294,7 +2312,7 @@ body.menu-is-open {
 }
 
 @media (max-width: 560px) {
-  .service-detail { gap: 38px; padding: 78px 20px 68px; }
+  .service-detail { gap: 32px; padding: 64px 20px 56px; }
   .service-detail__intro h1 { font-size: clamp(3rem, 14vw, 4.4rem); }
   .service-detail__visual { aspect-ratio: 1.05; }
   .service-detail__benefits { padding: 58px 20px 24px; }
@@ -2310,7 +2328,14 @@ body.menu-is-open {
 }
 
 .service-detail__visual { overflow: hidden; isolation: isolate; }
-.service-detail__visual .service-art { z-index: 0; transform: none; }
+.service-detail__visual .service-art {
+  z-index: 0;
+  transform: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  letter-spacing: normal;
+  line-height: 1.2;
+}
 
 .service-art__campaign-bars {
   position: absolute;
