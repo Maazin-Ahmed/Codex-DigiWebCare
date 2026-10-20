@@ -2443,3 +2443,55 @@ body.menu-is-open {
   .process-section__list li:hover,
   .process-section__list li:focus-within { transform: none; }
 }
+
+@media (max-width: 900px) {
+  .menu-button {
+    width: 44px;
+    height: 44px;
+    padding: 9px 4px;
+  }
+
+  .hero__content,
+  .page-hero__copy,
+  .about-section__copy,
+  .section-heading,
+  .contact-section__intro,
+  .contact-form,
+  .service-detail__intro,
+  .legal-section,
+  .legal-section__list,
+  .legal-section__contact {
+    min-width: 0;
+  }
+
+  .hero h1,
+  .page-hero h1,
+  .about-section h2,
+  .section-heading h2,
+  .portfolio-section h2,
+  .contact-section h2,
+  .catalog-section h2,
+  .faq-section h2,
+  .service-detail__intro h1,
+  .legal-section h2 {
+    overflow-wrap: anywhere;
+  }
+
+  .contact-details a,
+  .site-footer__links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .site-footer__links a {
+    margin-inline: -10px;
+    padding-inline: 10px;
+  }
+
+  .legal-section__contact a {
+    display: inline-block;
+    margin-block: -12px;
+    padding-block: 12px;
+  }
+}
