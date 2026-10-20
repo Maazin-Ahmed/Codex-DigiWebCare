@@ -2,7 +2,7 @@ export const brand = {
   name: 'DIGIWEB CARE',
   displayName: 'DigiWeb Care',
   domain: 'digiwebcarell.com',
-  email: 'info@digiwebcarell.com',
+  email: 'info@digicareweb.com',
   phone: '+1 (954) 599 7820',
   phoneHref: 'tel:+19545997820',
   address: '6511 Nova Drive #338, Davie, FL 33317',
