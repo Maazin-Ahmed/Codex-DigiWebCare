@@ -217,14 +217,24 @@ function ServicesJourney({ onNavigate }) {
 
     let desktopActive = false
     let desktopCleanup = () => {}
+    let refreshFrame = 0
+    let disposed = false
+
+    const queueRefresh = () => {
+      if (disposed || !desktopActive || refreshFrame) return
+      refreshFrame = requestAnimationFrame(() => {
+        refreshFrame = 0
+        ScrollTrigger.refresh()
+      })
+    }
 
     const updatePanelStates = (progress = 0) => {
       const viewportBounds = viewport.getBoundingClientRect()
       const focusPoint = viewportBounds.left + viewportBounds.width * 0.52
+      const panelBounds = panels.map((panel) => panel.getBoundingClientRect())
 
-      panels.forEach((panel) => {
-        const panelBounds = panel.getBoundingClientRect()
-        const panelPoint = panelBounds.left + panelBounds.width / 2
+      panels.forEach((panel, index) => {
+        const panelPoint = panelBounds[index].left + panelBounds[index].width / 2
         const focus = clamp(1 - Math.abs(focusPoint - panelPoint) / (viewportBounds.width * 0.58), 0, 1)
         panel.style.setProperty('--panel-focus', focus.toFixed(3))
       })
@@ -256,8 +266,9 @@ function ServicesJourney({ onNavigate }) {
             pinSpacing: true,
             start: 'top top',
             end: () => `+=${getTravel()}`,
-            scrub: 0.65,
+            scrub: true,
             anticipatePin: 1,
+            fastScrollEnd: true,
             invalidateOnRefresh: true,
             onUpdate: (scrollTrigger) => updatePanelStates(scrollTrigger.progress),
             onRefresh: (scrollTrigger) => updatePanelStates(scrollTrigger.progress),
@@ -265,11 +276,14 @@ function ServicesJourney({ onNavigate }) {
         })
       }, section)
 
-      const resizeObserver = new ResizeObserver(() => ScrollTrigger.refresh())
+      const resizeObserver = new ResizeObserver(queueRefresh)
       resizeObserver.observe(viewport)
       resizeObserver.observe(track)
+      document.fonts?.ready.then(queueRefresh)
       desktopCleanup = () => {
         resizeObserver.disconnect()
+        if (refreshFrame) cancelAnimationFrame(refreshFrame)
+        refreshFrame = 0
         context.revert()
       }
     }
@@ -279,7 +293,7 @@ function ServicesJourney({ onNavigate }) {
       if (shouldBeDesktop !== desktopActive) {
         setupDesktop()
       } else if (shouldBeDesktop) {
-        ScrollTrigger.refresh()
+        queueRefresh()
       }
     }
 
@@ -291,6 +305,7 @@ function ServicesJourney({ onNavigate }) {
       window.removeEventListener('resize', handleResize)
       motionQuery.removeEventListener('change', setupDesktop)
       desktopCleanup()
+      disposed = true
     }
   }, [])
 

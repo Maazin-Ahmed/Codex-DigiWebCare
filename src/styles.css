@@ -43,7 +43,7 @@ a:focus-visible {
 }
 
 .site-shell {
-  overflow: hidden;
+  overflow: visible;
   background: var(--carbon);
 }
 
@@ -1208,6 +1208,7 @@ h1 span {
   .hero__frame {
     min-height: calc(100svh - 76px);
     padding-block: 64px 48px;
+    align-content: center;
   }
 
   .hero__eyebrow {
@@ -1218,6 +1219,7 @@ h1 span {
   h1 {
     margin-bottom: 30px;
     font-size: clamp(3rem, 13.3vw, 5.6rem);
+    line-height: 0.9;
   }
 
   .hero__title-accent {
@@ -1248,6 +1250,16 @@ h1 span {
 
   .hero-bridge h2 {
     font-size: clamp(2.8rem, 14vw, 4.8rem);
+  }
+}
+
+@media (max-width: 360px) {
+  .hero h1 {
+    font-size: clamp(2.65rem, 13.25vw, 3rem);
+  }
+
+  .hero__title-accent {
+    padding-left: 0;
   }
 }
 

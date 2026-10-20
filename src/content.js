@@ -1,7 +1,7 @@
 export const brand = {
   name: 'DIGIWEB CARE',
   displayName: 'DigiWeb Care',
-  domain: 'digiwebcarell.com',
+  domain: 'digicareweb.com',
   email: 'digiwebcarell@gmail.com',
   phone: '+1 (954) 599 7820',
   phoneHref: 'tel:+19545997820',
