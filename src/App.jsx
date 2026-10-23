@@ -132,7 +132,7 @@ function HomePage({ onNavigate }) {
 
         <div className="hero__frame">
           <div className="hero__content">
-            <p className="eyebrow hero__eyebrow">DigiWeb Care / Florida, USA</p>
+            <p className="eyebrow hero__eyebrow">DigiCare Web / Florida, USA</p>
             <h1 id="hero-title" aria-label="Your digital transformation partner.">
               <span>Your digital</span>
               <span className="hero__title-accent">transformation</span>
@@ -147,7 +147,7 @@ function HomePage({ onNavigate }) {
                 <span aria-hidden="true">↗</span>
               </a>
               <a className="button button--text" href={`mailto:${brand.email}`}>
-                Contact DigiWeb Care
+                Contact DigiCare Web
               </a>
             </div>
           </div>
@@ -175,7 +175,7 @@ function AboutPage({ onNavigate }) {
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/about-us" onNavigate={onNavigate} />
       <main className="page-content">
-        <PageHero eyebrow="About DigiWeb Care" title="Empowering your digital journey." lede="A dedicated partner for businesses navigating the ever-evolving digital landscape." visual="consulting" />
+        <PageHero eyebrow="About DigiCare Web" title="Empowering your digital journey." lede="A dedicated partner for businesses navigating the ever-evolving digital landscape." visual="consulting" />
         <AboutSection page />
         <DifferentiatorsSection />
         <ProcessSection />
@@ -192,7 +192,7 @@ function ServicesPage({ onNavigate }) {
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/service" onNavigate={onNavigate} />
       <main className="page-content">
-        <PageHero eyebrow="Services / DigiWeb Care" title="Services with a clear scope." lede="Explore digital marketing, technology, ecommerce, Amazon, advertising, and consulting services." visual="cloud" />
+        <PageHero eyebrow="Services / DigiCare Web" title="Services with a clear scope." lede="Explore digital marketing, technology, ecommerce, Amazon, advertising, and consulting services." visual="cloud" />
         <ServiceCatalog onNavigate={onNavigate} />
         <ProcessSection />
         <ContactSection page />
@@ -207,7 +207,7 @@ function FaqPage({ onNavigate }) {
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/faq" onNavigate={onNavigate} />
       <main className="page-content">
-        <PageHero eyebrow="F.A.Q. / DigiWeb Care" title="Start with the useful questions." lede="Straightforward answers about services, timelines, support, security, and working together." visual="learning" />
+        <PageHero eyebrow="F.A.Q. / DigiCare Web" title="Start with the useful questions." lede="Straightforward answers about services, timelines, support, security, and working together." visual="learning" />
         <FaqSection />
         <ContactSection page />
       </main>
@@ -221,7 +221,7 @@ function ContactPage({ onNavigate }) {
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/contact-us" onNavigate={onNavigate} />
       <main className="page-content">
-        <PageHero eyebrow="Contacts / DigiWeb Care" title="Bring us the next opportunity." lede="Questions, project conversations, and a clear route into the digital landscape." visual="contact" />
+        <PageHero eyebrow="Contacts / DigiCare Web" title="Bring us the next opportunity." lede="Questions, project conversations, and a clear route into the digital landscape." visual="contact" />
         <ContactSection page showDetails />
       </main>
       <SiteFooter onNavigate={onNavigate} />
@@ -241,20 +241,20 @@ function App() {
   useEffect(() => {
     const service = serviceCatalog.find((item) => `/${item.slug}` === route)
     const pageTitle = service
-      ? `${service.name} — DigiWeb Care`
+      ? `${service.name} — DigiCare Web`
       : ({
-          '/': 'DigiWeb Care — Digital transformation partner',
-          '/about-us': 'About DigiWeb Care — Digital transformation partner',
-          '/service': 'Services — DigiWeb Care',
-          '/faq': 'FAQ — DigiWeb Care',
-          '/contact-us': 'Contact DigiWeb Care',
-          '/privacy-policy': 'Privacy Policy — DigiWeb Care',
-          '/terms-and-conditions': 'Terms and Conditions — DigiWeb Care',
-          '/payment': 'Package request — DigiWeb Care',
-        }[route] || 'Page not found — DigiWeb Care')
+          '/': 'DigiCare Web — Digital transformation partner',
+          '/about-us': 'About DigiCare Web — Digital transformation partner',
+          '/service': 'Services — DigiCare Web',
+          '/faq': 'FAQ — DigiCare Web',
+          '/contact-us': 'Contact DigiCare Web',
+          '/privacy-policy': 'Privacy Policy — DigiCare Web',
+          '/terms-and-conditions': 'Terms and Conditions — DigiCare Web',
+          '/payment': 'Package request — DigiCare Web',
+        }[route] || 'Page not found — DigiCare Web')
     const description = service
-      ? `${service.name} from DigiWeb Care: ${service.scope}`
-      : 'DigiWeb Care is a digital transformation partner for marketing, web, software, ecommerce, advertising, and business consulting.'
+      ? `${service.name} from DigiCare Web: ${service.scope}`
+      : 'DigiCare Web is a digital transformation partner for marketing, web, software, ecommerce, advertising, and business consulting.'
     document.title = pageTitle
     document.querySelector('meta[name="description"]')?.setAttribute('content', description)
   }, [route])

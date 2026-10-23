@@ -1,12 +1,12 @@
 export const brand = {
-  name: 'DIGIWEB CARE',
-  displayName: 'DigiWeb Care',
+  name: 'DIGICARE WEB',
+  displayName: 'DigiCare Web',
   domain: 'digicareweb.com',
-  email: 'digiwebcarell@gmail.com',
+  email: 'digicareweb@gmail.com',
   phone: '+1 (954) 599 7820',
   phoneHref: 'tel:+19545997820',
   address: '6511 Nova Drive #338, Davie, FL 33317',
-  copyright: 'DIGIWEB CARE (USA)',
+  copyright: 'DIGICARE WEB (USA)',
 }
 
 export const featuredServices = [
@@ -64,7 +64,7 @@ export const serviceCatalog = [
     heroVisual: 'finance',
     headline: 'Strategic financial solutions for your future.',
     paragraphs: [
-      'Navigating the financial landscape can be complex. DigiWeb Care offers financial guidance designed to meet individual and business needs.',
+      'Navigating the financial landscape can be complex. DigiCare Web offers financial guidance designed to meet individual and business needs.',
       'The published service page describes experienced professionals, personalized solutions, comprehensive support, and a client-centered approach.',
     ],
     benefits: ['Experienced financial experts', 'Client-centered approach', 'Proactive risk management'],
@@ -80,7 +80,7 @@ export const serviceCatalog = [
     heroVisual: 'cloud',
     headline: 'Scalability and flexibility in the cloud.',
     paragraphs: [
-      'DigiWeb Care helps businesses move toward the cloud through migration strategy, managed services, infrastructure setup, and ongoing support.',
+      'DigiCare Web helps businesses move toward the cloud through migration strategy, managed services, infrastructure setup, and ongoing support.',
       'The published positioning focuses on smoother transitions, optimized infrastructure, enhanced security, and operational flexibility.',
     ],
     benefits: ['Cloud migration strategy', 'Infrastructure setup and management'],
@@ -95,7 +95,7 @@ export const serviceCatalog = [
     heroVisual: 'learning',
     headline: 'Efficient learning and content management.',
     paragraphs: [
-      'DigiWeb Care develops tailored learning and content management systems for educational and operational needs.',
+      'DigiCare Web develops tailored learning and content management systems for educational and operational needs.',
       'The service is positioned around empowering organizations with systems that simplify publishing, organization, and learning workflows.',
     ],
     benefits: ['Custom LMS development', 'User training and support'],
@@ -110,7 +110,7 @@ export const serviceCatalog = [
     heroVisual: 'editorial',
     headline: 'Engage, inform, convert.',
     paragraphs: [
-      'DigiWeb Care creates blog posts, SEO-optimized website content, and informative articles intended to tell a brand story and support business objectives.',
+      'DigiCare Web creates blog posts, SEO-optimized website content, and informative articles intended to tell a brand story and support business objectives.',
       'The published service emphasizes content that resonates with an audience and supports engagement, information, and conversion.',
     ],
     benefits: ['Blog post writing', 'SEO-optimized website content', 'Monthly content calendar'],
@@ -125,7 +125,7 @@ export const serviceCatalog = [
     heroVisual: 'retail',
     headline: 'Effortless Amazon store management.',
     paragraphs: [
-      'DigiWeb Care handles day-to-day Amazon store operations, including product listings, inventory, advertising campaigns, and customer service.',
+      'DigiCare Web handles day-to-day Amazon store operations, including product listings, inventory, advertising campaigns, and customer service.',
       'The stated goal is to let store owners focus on strategic growth while the operational details are managed consistently.',
     ],
     benefits: ['Amazon store management', 'Product listings optimization'],
@@ -140,7 +140,7 @@ export const serviceCatalog = [
     heroVisual: 'registry',
     headline: 'Protecting your brand on Amazon.',
     paragraphs: [
-      'DigiWeb Care guides businesses through Amazon Brand Registry and describes ongoing monitoring intended to help identify potential infringements.',
+      'DigiCare Web guides businesses through Amazon Brand Registry and describes ongoing monitoring intended to help identify potential infringements.',
       'The service is focused on protecting brand reputation and intellectual property within Amazon’s marketplace.',
     ],
     benefits: ['Brand registration', 'Brand protection monitoring'],
@@ -155,7 +155,7 @@ export const serviceCatalog = [
     heroVisual: 'publishing',
     headline: 'Publishing excellence on Amazon.',
     paragraphs: [
-      'DigiWeb Care supports authors and publishers with Kindle Direct Publishing, print-on-demand services, formatting, cover design, listing optimization, and initial marketing strategy.',
+      'DigiCare Web supports authors and publishers with Kindle Direct Publishing, print-on-demand services, formatting, cover design, listing optimization, and initial marketing strategy.',
     ],
     benefits: ['Kindle Direct Publishing setup', 'Book formatting and cover design', 'Initial marketing strategy'],
     packages: [{ name: 'Amazon Publishing', price: '$1,500', features: ['Kindle Direct Publishing setup', 'Book formatting and cover design', 'Initial marketing strategy'] }],
@@ -186,7 +186,7 @@ export const serviceCatalog = [
     heroVisual: 'marketing',
     headline: 'Elevate your online presence.',
     paragraphs: [
-      'DigiWeb Care describes tailored SEO, social media, and PPC strategies designed to improve visibility, engagement, traffic, leads, and conversion rates.',
+      'DigiCare Web describes tailored SEO, social media, and PPC strategies designed to improve visibility, engagement, traffic, leads, and conversion rates.',
       'The published approach is data-driven and customized around each business’s objectives, industry, audience, and competition.',
     ],
     benefits: ['Search engine optimization', 'Social media management', 'PPC advertising', 'Analytics and reporting'],
@@ -205,7 +205,7 @@ export const serviceCatalog = [
     heroVisual: 'software',
     headline: 'Turn ideas into scalable software.',
     paragraphs: [
-      'DigiWeb Care positions its software development work around scalable, efficient, future-ready applications aligned with specific business goals.',
+      'DigiCare Web positions its software development work around scalable, efficient, future-ready applications aligned with specific business goals.',
     ],
     benefits: ['Custom software development', 'Testing and quality assurance', 'Support and maintenance'],
     packages: [
@@ -223,7 +223,7 @@ export const serviceCatalog = [
     heroVisual: 'transformation',
     headline: 'Unlocking your digital potential.',
     paragraphs: [
-      'DigiWeb Care describes digital transformation engagements that identify opportunities, streamline processes, implement technology, and improve customer experiences.',
+      'DigiCare Web describes digital transformation engagements that identify opportunities, streamline processes, implement technology, and improve customer experiences.',
       'The published service also emphasizes operational optimization, customer engagement, and future readiness.',
     ],
     benefits: ['Assessment of current digital infrastructure', 'Digital strategy development', 'Implementation support'],
@@ -256,7 +256,7 @@ export const serviceCatalog = [
     heroVisual: 'advertising',
     headline: 'Precision-targeted advertising.',
     paragraphs: [
-      'DigiWeb Care describes Google advertising work across PPC campaigns, display ads, keyword optimization, audience targeting, and performance tracking.',
+      'DigiCare Web describes Google advertising work across PPC campaigns, display ads, keyword optimization, audience targeting, and performance tracking.',
       'The published service emphasizes research-led campaign optimization and responsible use of advertising budgets.',
     ],
     benefits: ['PPC campaign setup and management', 'Keyword research and optimization', 'Performance tracking'],
@@ -271,7 +271,7 @@ export const serviceCatalog = [
     heroVisual: 'consulting',
     headline: 'Strategic guidance for success.',
     paragraphs: [
-      'DigiWeb Care describes consulting support for informed decisions, operational improvement, market expansion, and organizational efficiency.',
+      'DigiCare Web describes consulting support for informed decisions, operational improvement, market expansion, and organizational efficiency.',
       'The published positioning is advisory and tailored to each company’s goals, challenges, and opportunities.',
     ],
     benefits: ['In-depth business analysis', 'Strategy development', 'Implementation support'],
@@ -286,7 +286,7 @@ export const serviceCatalog = [
     heroVisual: 'animation',
     headline: 'Bring your brand to life — and protect it.',
     paragraphs: [
-      'DigiWeb Care describes animation services for explainers, 2D and 3D work, and motion graphics designed to communicate a brand story.',
+      'DigiCare Web describes animation services for explainers, 2D and 3D work, and motion graphics designed to communicate a brand story.',
       'The same page describes trademark search, registration, filing support, and protection guidance for brand identity.',
     ],
     benefits: ['Custom animation creation', 'Scriptwriting and storyboarding', 'Trademark search and analysis', 'Filing and registration support'],
@@ -299,19 +299,19 @@ export const serviceCatalog = [
 
 export const faqItems = [
   {
-    question: 'What services does DIGIWEB CARE offer?',
-    answer: 'DIGIWEB CARE lists Digital Marketing, Software Development, Digital Transformation, Web Development, Google Advertising, Business Consulting, Animation and Trademark services, Brand Development, Ecommerce solutions, Amazon-related services, Content Development, LMS/CMS Development, and Cloud-Based services.',
+    question: 'What services does DIGICARE WEB offer?',
+    answer: 'DIGICARE WEB lists Digital Marketing, Software Development, Digital Transformation, Web Development, Google Advertising, Business Consulting, Animation and Trademark services, Brand Development, Ecommerce solutions, Amazon-related services, Content Development, LMS/CMS Development, and Cloud-Based services.',
   },
   {
     question: 'How can Digital Marketing benefit my business?',
     answer: 'The published FAQ says digital marketing can improve online visibility, engage a target audience, and support return on investment through SEO, social media, and PPC advertising.',
   },
   {
-    question: 'What makes DIGIWEB CARE’s Software Development stand out?',
+    question: 'What makes DIGICARE WEB’s Software Development stand out?',
     answer: 'The published answer describes tailored, scalable, efficient, and future-ready software applications aligned with individual business goals.',
   },
   {
-    question: 'What industries does DIGIWEB CARE serve?',
+    question: 'What industries does DIGICARE WEB serve?',
     answer: 'The published FAQ names ecommerce, finance, healthcare, education, and manufacturing among the industries served, while noting that the list is not exhaustive.',
   },
   {
@@ -323,16 +323,16 @@ export const faqItems = [
     answer: 'Yes. The published FAQ describes support for product listing optimization, Amazon PPC campaigns, and improving an overall presence on the platform.',
   },
   {
-    question: 'What sets DIGIWEB CARE’s Ecommerce Solutions apart?',
+    question: 'What sets DIGICARE WEB’s Ecommerce Solutions apart?',
     answer: 'The published answer highlights user experience optimization, conversion rate optimization, and strategies tailored to a specific online shopping experience.',
   },
   {
     question: 'How do you handle data security and privacy?',
-    answer: 'The published FAQ states that DIGIWEB CARE uses industry-standard security measures, follows privacy practices, and complies with relevant regulations.',
+    answer: 'The published FAQ states that DIGICARE WEB uses industry-standard security measures, follows privacy practices, and complies with relevant regulations.',
   },
   {
     question: 'Do you offer ongoing support and maintenance?',
-    answer: 'Yes. The published FAQ says support and maintenance can address issues, updates, and technical assistance for software and websites developed by DIGIWEB CARE.',
+    answer: 'Yes. The published FAQ says support and maintenance can address issues, updates, and technical assistance for software and websites developed by DIGICARE WEB.',
   },
   {
     question: 'Can you assist with staff training for new systems or software?',
@@ -341,11 +341,11 @@ export const faqItems = [
 ]
 
 export const privacySections = [
-  ['Information collection', 'DIGIWEB CARE states that client information may be collected through email, phone, contact forms, order forms, and creative briefs. The published policy lists names, company details, billing address, email, phone, fax, order details, residence, comments, IP address, browser version, operating system, and visit time.'],
+  ['Information collection', 'DIGICARE WEB states that client information may be collected through email, phone, contact forms, order forms, and creative briefs. The published policy lists names, company details, billing address, email, phone, fax, order details, residence, comments, IP address, browser version, operating system, and visit time.'],
   ['Use of collected information', 'The published policy says collected information is used to understand requested services, process billing, communicate about orders and delivery, improve marketing, and send updates or promotional information where permitted.'],
   ['Privacy of payments', 'The policy states that payment processors use Secure Sockets Layer protection for billing information and payment processing.'],
   ['Confidentiality', 'The published policy describes client information as confidential and says access is limited to designated members, except where disclosure is authorized or required by law.'],
-  ['Amendments', 'DIGIWEB CARE states that it may amend the privacy policy for security reasons and will provide notice of material updates.'],
+  ['Amendments', 'DIGICARE WEB states that it may amend the privacy policy for security reasons and will provide notice of material updates.'],
   ['Conditions of information disclosure', 'The policy states that disclosure may occur when required for judicial proceedings, a court order, or another legal process.'],
   ['Contact', 'The published policy directs privacy questions to the website contact form.'],
 ]
@@ -360,8 +360,8 @@ export const termsSections = [
   ['Service fulfillment', 'The published policy states that services are delivered digitally through agreed channels such as email, phone, WhatsApp, client portals, cloud storage, and other electronic methods.'],
   ['Delivery timelines', 'The terms state that services generally begin after payment confirmation and receipt of required information or access, with completion timelines determined by the agreed scope.'],
   ['Customer requirements', 'The client is responsible for providing information, approvals, content, access, credentials, and other materials needed to complete the service.'],
-  ['Results disclaimer', 'The published terms state that DigiWeb Care does not guarantee a specific business, financial, advertising, sales, or investment outcome.'],
-  ['Communication policy', 'The terms state that official communication should use the published email address and phone numbers, and that DigiWeb Care is not responsible for communication through unlisted channels.'],
+  ['Results disclaimer', 'The published terms state that DigiCare Web does not guarantee a specific business, financial, advertising, sales, or investment outcome.'],
+  ['Communication policy', 'The terms state that official communication should use the published email address and phone numbers, and that DigiCare Web is not responsible for communication through unlisted channels.'],
   ['SMS opt-in', 'The published terms contain consent, frequency, message-rate, and STOP opt-out language for customers who choose to receive automated marketing, transactional, or informational text messages.'],
 ]
 

@@ -142,7 +142,7 @@ export function ServiceArtwork({ type }) {
       <div className="service-art service-art--software" aria-hidden="true">
         <div className="service-art__console">
           <div className="service-art__console-top"><span /> <span /> <span /></div>
-          <p><i>$</i> digiweb / build --future</p>
+          <p><i>$</i> digicare / build --future</p>
           <p className="is-muted">mapping the moving parts</p>
           <p><i className="is-violet">+</i> <b>system.ready</b></p>
           <span className="service-art__console-caret" />
@@ -195,7 +195,7 @@ export function ServiceArtwork({ type }) {
       <span className="service-art__waypoint service-art__waypoint--one" />
       <span className="service-art__waypoint service-art__waypoint--two" />
       <span className="service-art__waypoint service-art__waypoint--three" />
-      <p>where next?</p>
+      <p className="service-art__consulting-tag">where next?</p>
     </div>
   )
 }
@@ -210,23 +210,15 @@ function ServicesJourney({ onNavigate }) {
     const section = sectionRef.current
     const viewport = viewportRef.current
     const track = trackRef.current
+    if (!section || !viewport || !track) return undefined
+
     const panels = Array.from(track.querySelectorAll('.service-panel'))
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-    if (!section || !viewport || !track) return undefined
-
     let desktopActive = false
     let desktopCleanup = () => {}
-    let refreshFrame = 0
+    let mobileCleanup = () => {}
     let disposed = false
-
-    const queueRefresh = () => {
-      if (disposed || !desktopActive || refreshFrame) return
-      refreshFrame = requestAnimationFrame(() => {
-        refreshFrame = 0
-        ScrollTrigger.refresh()
-      })
-    }
 
     const updatePanelStates = (progress = 0) => {
       const viewportBounds = viewport.getBoundingClientRect()
@@ -239,20 +231,43 @@ function ServicesJourney({ onNavigate }) {
         panel.style.setProperty('--panel-focus', focus.toFixed(3))
       })
 
-      if (progressRef.current) progressRef.current.style.transform = `scaleX(${progress})`
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${progress})`
+      }
       section.style.setProperty('--journey-progress', progress)
+    }
+
+    const setupMobile = () => {
+      mobileCleanup()
+      // Reset track positioning
+      track.style.transform = ''
+
+      const onMobileScroll = () => {
+        const maxScroll = Math.max(1, viewport.scrollWidth - viewport.clientWidth)
+        const progress = clamp(viewport.scrollLeft / maxScroll, 0, 1)
+        updatePanelStates(progress)
+      }
+
+      viewport.addEventListener('scroll', onMobileScroll, { passive: true })
+      onMobileScroll()
+
+      mobileCleanup = () => {
+        viewport.removeEventListener('scroll', onMobileScroll)
+      }
     }
 
     const setupDesktop = () => {
       desktopCleanup()
+      mobileCleanup()
       desktopActive = window.innerWidth > 900 && !motionQuery.matches
 
       if (!desktopActive) {
-        updatePanelStates(0)
+        setupMobile()
         return
       }
 
       const getTravel = () => Math.max(1, track.scrollWidth - viewport.clientWidth)
+
       const context = gsap.context(() => {
         gsap.set(track, { x: 0 })
         updatePanelStates(0)
@@ -267,44 +282,53 @@ function ServicesJourney({ onNavigate }) {
             start: 'top top',
             end: () => `+=${getTravel()}`,
             scrub: true,
-            anticipatePin: 1,
-            fastScrollEnd: true,
+            anticipatePin: 0,
+            fastScrollEnd: false,
             invalidateOnRefresh: true,
-            onUpdate: (scrollTrigger) => updatePanelStates(scrollTrigger.progress),
-            onRefresh: (scrollTrigger) => updatePanelStates(scrollTrigger.progress),
+            onUpdate: (self) => updatePanelStates(self.progress),
+            onRefresh: (self) => updatePanelStates(self.progress),
           },
         })
       }, section)
 
-      const resizeObserver = new ResizeObserver(queueRefresh)
-      resizeObserver.observe(viewport)
-      resizeObserver.observe(track)
-      document.fonts?.ready.then(queueRefresh)
+      let resizeTimeout = 0
+      const onResizeDebounced = () => {
+        clearTimeout(resizeTimeout)
+        resizeTimeout = setTimeout(() => {
+          if (!disposed && desktopActive) {
+            ScrollTrigger.refresh()
+          }
+        }, 150)
+      }
+
+      window.addEventListener('resize', onResizeDebounced)
+      document.fonts?.ready.then(() => {
+        if (!disposed && desktopActive) ScrollTrigger.refresh()
+      })
+
       desktopCleanup = () => {
-        resizeObserver.disconnect()
-        if (refreshFrame) cancelAnimationFrame(refreshFrame)
-        refreshFrame = 0
+        clearTimeout(resizeTimeout)
+        window.removeEventListener('resize', onResizeDebounced)
         context.revert()
       }
     }
 
-    const handleResize = () => {
+    const handleWindowResize = () => {
       const shouldBeDesktop = window.innerWidth > 900 && !motionQuery.matches
       if (shouldBeDesktop !== desktopActive) {
         setupDesktop()
-      } else if (shouldBeDesktop) {
-        queueRefresh()
       }
     }
 
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleWindowResize)
     motionQuery.addEventListener('change', setupDesktop)
     setupDesktop()
 
     return () => {
-      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', handleWindowResize)
       motionQuery.removeEventListener('change', setupDesktop)
       desktopCleanup()
+      mobileCleanup()
       disposed = true
     }
   }, [])
@@ -313,7 +337,10 @@ function ServicesJourney({ onNavigate }) {
     <section className="services-journey" id="services" ref={sectionRef} aria-labelledby="services-title">
       <div className="services-journey__pin">
         <div className="services-journey__header">
-          <p className="services-journey__instruction"><span aria-hidden="true">↔</span> Scroll to move through</p>
+          <p className="services-journey__instruction">
+            <span aria-hidden="true">↔</span>
+            <span className="services-journey__instruction-text">Scroll to move through</span>
+          </p>
         </div>
 
         <div className="services-journey__viewport" ref={viewportRef}>
@@ -323,7 +350,7 @@ function ServicesJourney({ onNavigate }) {
                 <p className="eyebrow">{brand.name}</p>
                 <h2 id="services-title">From first signal to lasting system.</h2>
                 <p>
-                  DigiWeb Care is more than a digital solutions provider; it is a strategic partner for businesses
+                  DigiCare Web is more than a digital solutions provider; it is a strategic partner for businesses
                   ready to thrive in a changing digital world.
                 </p>
                 <a className="button button--outline-light" href={`mailto:${brand.email}`}>

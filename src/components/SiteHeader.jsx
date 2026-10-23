@@ -60,6 +60,14 @@ function SiteHeader({ currentPath = '/', onNavigate, overlay = false }) {
         <span />
       </button>
 
+      {menuOpen && (
+        <div
+          className="site-header__backdrop"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       <div className="site-header__mobile-nav" id="primary-navigation" aria-hidden={!menuOpen}>
         <p className="eyebrow">{brand.name}</p>
         {navigation.map((item) => (

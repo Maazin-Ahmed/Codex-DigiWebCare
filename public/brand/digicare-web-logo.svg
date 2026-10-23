@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" role="img" aria-labelledby="dc-logo-title dc-logo-desc">
+  <title id="dc-logo-title">DigiCare Web</title>
+  <desc id="dc-logo-desc">DigiCare Web company logo</desc>
+  <defs>
+    <linearGradient id="dc-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5fd3ee"/>
+      <stop offset="100%" stop-color="#2f5aa8"/>
+    </linearGradient>
+    <linearGradient id="dc-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7b5bd6"/>
+      <stop offset="100%" stop-color="#2f5aa8"/>
+    </linearGradient>
+  </defs>
+  <!-- Geometric Diamond Mark -->
+  <g id="mark" transform="translate(10, 8)">
+    <!-- Column 1 -->
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(0, 24)" fill="#f4f7fb"/>
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(0, 68)" fill="url(#dc-grad-1)"/>
+    <!-- Column 2 -->
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(28, 12)" fill="#c9d8f6"/>
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(28, 56)" fill="#5fd3ee"/>
+    <!-- Column 3 -->
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(56, 0)" fill="#7b5bd6"/>
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(56, 44)" fill="url(#dc-grad-2)"/>
+    <!-- Column 4 -->
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(84, 12)" fill="#5fd3ee"/>
+    <polygon points="26,34 46,6 26,-22 6,6" transform="translate(84, 56)" fill="#f4f7fb"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="156" y="66" fill="#f4f7fb" font-family="'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="700" letter-spacing="-0.5">DigiCare</text>
+  <text x="158" y="98" fill="#5fd3ee" font-family="'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="700" letter-spacing="6">WEB</text>
+</svg>

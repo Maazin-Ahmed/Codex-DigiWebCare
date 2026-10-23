@@ -25,13 +25,13 @@ export function AboutSection({ page = false }) {
     <section className={`about-section${page ? ' about-section--page' : ''}`} id={page ? undefined : 'about'} aria-labelledby="about-title">
       <div className="about-section__visual" aria-hidden="true">
         <div className="about-section__visual-field" />
-        <span>DW / CARE</span>
+        <span>DC / WEB</span>
       </div>
       <div className="about-section__copy">
-        <p className="eyebrow">About DigiWeb Care</p>
+        <p className="eyebrow">About DigiCare Web</p>
         <h2 id="about-title">Your digital transformation partner.</h2>
         <p>
-          At DigiWeb Care, we are dedicated partners in navigating the ever-evolving digital landscape. With a
+          At DigiCare Web, we are dedicated partners in navigating the ever-evolving digital landscape. With a
           commitment to innovation and excellence, we empower businesses to thrive in the digital age.
         </p>
         <p>
@@ -63,7 +63,7 @@ export function DifferentiatorsSection() {
           <p className="eyebrow">How we work</p>
           <h2 id="differentiators-title">Clarity is part of the service.</h2>
         </div>
-        <p>DigiWeb Care’s published information emphasizes expertise, innovation, customization, client focus, and practical delivery.</p>
+        <p>DigiCare Web’s published information emphasizes expertise, innovation, customization, client focus, and practical delivery.</p>
       </div>
       <ol className="differentiators-list">
         {points.map(([title, text]) => (
@@ -167,7 +167,7 @@ export function ContactSection({ page = false, showDetails = false }) {
       <div className="contact-section__intro">
         <p className="eyebrow">Get in touch</p>
         <h2 id="contact-title">Let’s find the next move.</h2>
-        <p>Whether you have questions about our services, need more information, or simply want to connect, the DigiWeb Care team is here to assist.</p>
+        <p>Whether you have questions about our services, need more information, or simply want to connect, the DigiCare Web team is here to assist.</p>
         {showDetails && (
           <div className="contact-details">
             <a href={`mailto:${brand.email}`}>{brand.email}</a>
@@ -188,7 +188,7 @@ function ServiceCatalogCard({ service, onNavigate }) {
     <a className="catalog-card" href={href} onClick={(event) => onNavigate?.(event, href)}>
       <div className={`catalog-card__visual catalog-card__visual--${service.heroVisual || service.visual}`} aria-hidden="true">
         <ServiceArtwork type={service.heroVisual || service.visual} />
-        <span className="catalog-card__visual-label">DigiWeb Care / Service</span>
+        <span className="catalog-card__visual-label">DigiCare Web / Service</span>
       </div>
       <div className="catalog-card__body">
         <div className="catalog-card__meta">
@@ -211,7 +211,7 @@ export function ServiceCatalog({ onNavigate }) {
           <p className="eyebrow">Service catalog</p>
           <h2 id="catalog-title">The details matter.</h2>
         </div>
-        <p>Published prices are shown in US dollars where available. Custom scopes and final billing terms should be confirmed with DigiWeb Care.</p>
+        <p>Published prices are shown in US dollars where available. Custom scopes and final billing terms should be confirmed with DigiCare Web.</p>
       </div>
       <div className="catalog-grid">
         {serviceCatalog.map((service) => (
@@ -313,7 +313,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
             <h1 id="service-detail-title">{service.name}</h1>
             <p className="service-detail__headline">{service.headline}</p>
             {service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            <a className="button button--primary" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}&body=${encodeURIComponent(`Hello DigiWeb Care,\n\nI would like to discuss ${service.name}.\n\n`)}`}>
+            <a className="button button--primary" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}&body=${encodeURIComponent(`Hello DigiCare Web,\n\nI would like to discuss ${service.name}.\n\n`)}`}>
               {service.cta || 'Discuss this service'} <span aria-hidden="true">↗</span>
             </a>
           </div>
@@ -336,7 +336,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
               <p className="eyebrow">Published packages</p>
               <h2 id="service-packages-title">Choose the right starting point</h2>
             </div>
-            <p>Published prices and package details are shown as listed. Contact DigiWeb Care to confirm the current scope and terms.</p>
+            <p>Published prices and package details are shown as listed. Contact DigiCare Web to confirm the current scope and terms.</p>
           </div>
           {service.packages.length > 0 ? (
             <div className={`service-packages__list${service.packages.length === 1 ? ' service-packages__list--single' : ''}`}>
@@ -345,7 +345,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
                   <h3>{item.name}</h3>
                   <p className="service-packages__price">{item.price}</p>
                   <ul aria-label={`${item.name} features`}>{item.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
-                  <a className="button button--outline" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${item.name} request`)}&body=${encodeURIComponent(`Hello DigiWeb Care,\n\nI would like to request more information about ${item.name} (${item.price}) under ${service.name}.\n\n`)}`}>Request this package <span aria-hidden="true">↗</span></a>
+                  <a className="button button--outline" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${item.name} request`)}&body=${encodeURIComponent(`Hello DigiCare Web,\n\nI would like to request more information about ${item.name} (${item.price}) under ${service.name}.\n\n`)}`}>Request this package <span aria-hidden="true">↗</span></a>
                 </article>
               ))}
             </div>
