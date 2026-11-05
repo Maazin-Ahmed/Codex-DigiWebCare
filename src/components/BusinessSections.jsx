@@ -366,7 +366,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
           {canPurchase ? (
             <div className="service-packages__enquiry service-packages__enquiry--fixed">
               <div>
-                <p className="eyebrow">Database price / USD</p>
+                <p className="eyebrow"> Price / USD</p>
                 <p className="service-packages__price">{service.price_label}</p>
               </div>
               <div>

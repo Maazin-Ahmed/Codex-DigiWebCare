@@ -1,5 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import SignalFallback from './components/SignalFallback.jsx'
+import { useEffect, useState } from 'react'
 import ServicesJourney from './components/ServicesJourney.jsx'
 import SiteHeader from './components/SiteHeader.jsx'
 import {
@@ -17,7 +16,7 @@ import {
   ServiceDetailPage,
   SiteFooter,
 } from './components/BusinessSections.jsx'
-import { brand, featuredServices, serviceCatalog } from './content.js'
+import { brand, serviceCatalog } from './content.js'
 import { canonicalOrigin, canonicalPathFor, getPageMetadata } from './seo.js'
 import CartPage from './pages/CartPage.jsx'
 import CheckoutPage from './pages/CheckoutPage.jsx'
@@ -25,30 +24,6 @@ import OrderConfirmationPage from './pages/OrderConfirmationPage.jsx'
 import { useCart } from './cart/CartContext.jsx'
 import { useCatalog } from './services/CatalogContext.jsx'
 import './styles.css'
-
-const Hero3D = lazy(() => import('./components/Hero3D.jsx'))
-
-function HeroVisualSlot() {
-  const [enhanced, setEnhanced] = useState(false)
-
-  useEffect(() => {
-    const query = window.matchMedia('(min-width: 901px) and (prefers-reduced-motion: no-preference)')
-    const update = () => setEnhanced(query.matches)
-
-    update()
-    query.addEventListener('change', update)
-
-    return () => query.removeEventListener('change', update)
-  }, [])
-
-  if (!enhanced) return <SignalFallback />
-
-  return (
-    <Suspense fallback={<SignalFallback />}>
-      <Hero3D />
-    </Suspense>
-  )
-}
 
 const normalizePath = (path) => path.replace(/\/+$/, '') || '/'
 
@@ -74,72 +49,15 @@ function updatePageMetadata(route, service) {
 }
 
 function HomePage({ onNavigate }) {
-  const { services } = useCatalog()
-  const featuredFromDatabase = featuredServices.flatMap((design) => {
-    const service = services.find((item) => item.slug === design.slug)
-    return service ? [{ ...design, name: service.name }] : []
-  })
-  const heroRef = useRef(null)
   const [videoFailed, setVideoFailed] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
   useEffect(() => {
-    const hero = heroRef.current
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const pointerQuery = window.matchMedia('(min-width: 901px) and (hover: hover) and (prefers-reduced-motion: no-preference)')
-    let animationFrame = 0
-
-    const updateScroll = () => {
-      if (motionQuery.matches) return
-
-      cancelAnimationFrame(animationFrame)
-      animationFrame = requestAnimationFrame(() => {
-        const bounds = hero.getBoundingClientRect()
-        const progress = Math.min(1, Math.max(0, -bounds.top / bounds.height))
-        hero.style.setProperty('--scroll-shift', `${progress * 3}vh`)
-      })
-    }
-
-    const updatePointer = (event) => {
-      if (!pointerQuery.matches) return
-
-      const x = (event.clientX / window.innerWidth - 0.5) * 10
-      const y = (event.clientY / window.innerHeight - 0.5) * 6
-      hero.style.setProperty('--pointer-x', `${x}px`)
-      hero.style.setProperty('--pointer-y', `${y}px`)
-    }
-
-    const resetMotion = () => {
-      setReducedMotion(motionQuery.matches)
-      if (motionQuery.matches) {
-        hero.style.setProperty('--scroll-shift', '0vh')
-        hero.style.setProperty('--pointer-x', '0px')
-        hero.style.setProperty('--pointer-y', '0px')
-      }
-    }
-
-    const syncPointerMotion = () => {
-      if (pointerQuery.matches) {
-        window.addEventListener('pointermove', updatePointer, { passive: true })
-      } else {
-        window.removeEventListener('pointermove', updatePointer)
-        hero.style.setProperty('--pointer-x', '0px')
-        hero.style.setProperty('--pointer-y', '0px')
-      }
-    }
-
-    window.addEventListener('scroll', updateScroll, { passive: true })
-    motionQuery.addEventListener('change', resetMotion)
-    pointerQuery.addEventListener('change', syncPointerMotion)
-    syncPointerMotion()
-    updateScroll()
-
+    const updateMotionPreference = () => setReducedMotion(motionQuery.matches)
+    motionQuery.addEventListener('change', updateMotionPreference)
     return () => {
-      cancelAnimationFrame(animationFrame)
-      window.removeEventListener('scroll', updateScroll)
-      window.removeEventListener('pointermove', updatePointer)
-      motionQuery.removeEventListener('change', resetMotion)
-      pointerQuery.removeEventListener('change', syncPointerMotion)
+      motionQuery.removeEventListener('change', updateMotionPreference)
     }
   }, [])
 
@@ -147,7 +65,6 @@ function HomePage({ onNavigate }) {
     <main className="site-shell">
       <section
         className={`hero${videoFailed ? ' hero--video-failed' : ''}`}
-        ref={heroRef}
         aria-labelledby="hero-title"
       >
         <div className="hero__media" aria-hidden="true">
@@ -169,10 +86,6 @@ function HomePage({ onNavigate }) {
           <div className="hero__fallback" />
           <div className="hero__shade" />
           <div className="hero__grain" />
-        </div>
-
-        <div className="hero__visual" aria-hidden="true">
-          <HeroVisualSlot />
         </div>
 
         <SiteHeader currentPath="/" onNavigate={onNavigate} overlay />
@@ -199,11 +112,6 @@ function HomePage({ onNavigate }) {
             </div>
           </div>
 
-          <aside className="hero__rail" aria-label={`${brand.name} service areas`}>
-            <ul>
-              {featuredFromDatabase.map((service) => <li key={service.name}>{service.name}</li>)}
-            </ul>
-          </aside>
         </div>
       </section>
 
