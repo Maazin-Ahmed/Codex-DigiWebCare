@@ -282,7 +282,7 @@ function ServicesJourney({ onNavigate }) {
             start: 'top top',
             end: () => `+=${getTravel()}`,
             scrub: true,
-            anticipatePin: 0,
+            anticipatePin: 1,
             fastScrollEnd: false,
             invalidateOnRefresh: true,
             onUpdate: (self) => updatePanelStates(self.progress),

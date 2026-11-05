@@ -82,7 +82,13 @@ function SiteHeader({ currentPath = '/', onNavigate, overlay = false }) {
             {item.label}
           </a>
         ))}
-        <a className="site-header__mobile-contact" href={`mailto:${brand.email}`}>{brand.email} ↗</a>
+        <a
+          className="site-header__mobile-contact"
+          href={`mailto:${brand.email}`}
+          tabIndex={menuOpen ? 0 : -1}
+        >
+          {brand.email} ↗
+        </a>
       </div>
     </header>
   )

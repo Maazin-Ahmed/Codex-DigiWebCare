@@ -18,6 +18,7 @@ import {
   SiteFooter,
 } from './components/BusinessSections.jsx'
 import { brand, featuredServices, serviceCatalog } from './content.js'
+import { canonicalOrigin, canonicalPathFor, getPageMetadata } from './seo.js'
 import './styles.css'
 
 const Hero3D = lazy(() => import('./components/Hero3D.jsx'))
@@ -46,13 +47,35 @@ function HeroVisualSlot() {
 
 const normalizePath = (path) => path.replace(/\/+$/, '') || '/'
 
+function updatePageMetadata(route, service) {
+  const metadata = getPageMetadata(route, service)
+  const canonicalUrl = `${canonicalOrigin}${canonicalPathFor(route)}`
+  const imageUrl = `${canonicalOrigin}/brand/digicare-web-logo.svg`
+
+  document.title = metadata.title
+  document.querySelector('meta[name="description"]')?.setAttribute('content', metadata.description)
+  document.querySelector('link[rel="canonical"]')?.setAttribute('href', canonicalUrl)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', metadata.title)
+  document.querySelector('meta[property="og:description"]')?.setAttribute('content', metadata.description)
+  document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonicalUrl)
+  document.querySelector('meta[property="og:image"]')?.setAttribute('content', imageUrl)
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', metadata.title)
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', metadata.description)
+  document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', imageUrl)
+
+  const robots = document.querySelector('meta[name="robots"]')
+  robots?.setAttribute('content', metadata.noindex ? 'noindex, follow' : 'index, follow')
+}
+
 function HomePage({ onNavigate }) {
   const heroRef = useRef(null)
   const [videoFailed, setVideoFailed] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 
   useEffect(() => {
     const hero = heroRef.current
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const pointerQuery = window.matchMedia('(min-width: 901px) and (hover: hover) and (prefers-reduced-motion: no-preference)')
     let animationFrame = 0
 
     const updateScroll = () => {
@@ -67,7 +90,7 @@ function HomePage({ onNavigate }) {
     }
 
     const updatePointer = (event) => {
-      if (motionQuery.matches) return
+      if (!pointerQuery.matches) return
 
       const x = (event.clientX / window.innerWidth - 0.5) * 10
       const y = (event.clientY / window.innerHeight - 0.5) * 6
@@ -76,6 +99,7 @@ function HomePage({ onNavigate }) {
     }
 
     const resetMotion = () => {
+      setReducedMotion(motionQuery.matches)
       if (motionQuery.matches) {
         hero.style.setProperty('--scroll-shift', '0vh')
         hero.style.setProperty('--pointer-x', '0px')
@@ -83,9 +107,20 @@ function HomePage({ onNavigate }) {
       }
     }
 
+    const syncPointerMotion = () => {
+      if (pointerQuery.matches) {
+        window.addEventListener('pointermove', updatePointer, { passive: true })
+      } else {
+        window.removeEventListener('pointermove', updatePointer)
+        hero.style.setProperty('--pointer-x', '0px')
+        hero.style.setProperty('--pointer-y', '0px')
+      }
+    }
+
     window.addEventListener('scroll', updateScroll, { passive: true })
-    window.addEventListener('pointermove', updatePointer, { passive: true })
     motionQuery.addEventListener('change', resetMotion)
+    pointerQuery.addEventListener('change', syncPointerMotion)
+    syncPointerMotion()
     updateScroll()
 
     return () => {
@@ -93,6 +128,7 @@ function HomePage({ onNavigate }) {
       window.removeEventListener('scroll', updateScroll)
       window.removeEventListener('pointermove', updatePointer)
       motionQuery.removeEventListener('change', resetMotion)
+      pointerQuery.removeEventListener('change', syncPointerMotion)
     }
   }, [])
 
@@ -104,7 +140,7 @@ function HomePage({ onNavigate }) {
         aria-labelledby="hero-title"
       >
         <div className="hero__media" aria-hidden="true">
-          {!videoFailed && (
+          {!videoFailed && !reducedMotion && (
             <video
               className="hero__video"
               autoPlay
@@ -240,23 +276,7 @@ function App() {
 
   useEffect(() => {
     const service = serviceCatalog.find((item) => `/${item.slug}` === route)
-    const pageTitle = service
-      ? `${service.name} — DigiCare Web`
-      : ({
-          '/': 'DigiCare Web — Digital transformation partner',
-          '/about-us': 'About DigiCare Web — Digital transformation partner',
-          '/service': 'Services — DigiCare Web',
-          '/faq': 'FAQ — DigiCare Web',
-          '/contact-us': 'Contact DigiCare Web',
-          '/privacy-policy': 'Privacy Policy — DigiCare Web',
-          '/terms-and-conditions': 'Terms and Conditions — DigiCare Web',
-          '/payment': 'Package request — DigiCare Web',
-        }[route] || 'Page not found — DigiCare Web')
-    const description = service
-      ? `${service.name} from DigiCare Web: ${service.scope}`
-      : 'DigiCare Web is a digital transformation partner for marketing, web, software, ecommerce, advertising, and business consulting.'
-    document.title = pageTitle
-    document.querySelector('meta[name="description"]')?.setAttribute('content', description)
+    updatePageMetadata(route, service)
   }, [route])
 
   const handleNavigate = (event, href) => {

@@ -1,12 +1,12 @@
 export const brand = {
-  name: 'DIGICARE WEB',
+  name: 'DigiCare Web',
   displayName: 'DigiCare Web',
   domain: 'digicareweb.com',
   email: 'digicareweb@gmail.com',
   phone: '+1 (954) 599 7820',
   phoneHref: 'tel:+19545997820',
   address: '6511 Nova Drive #338, Davie, FL 33317',
-  copyright: 'DIGICARE WEB (USA)',
+  copyright: 'DigiCare Web (USA)',
 }
 
 export const featuredServices = [
@@ -299,19 +299,19 @@ export const serviceCatalog = [
 
 export const faqItems = [
   {
-    question: 'What services does DIGICARE WEB offer?',
-    answer: 'DIGICARE WEB lists Digital Marketing, Software Development, Digital Transformation, Web Development, Google Advertising, Business Consulting, Animation and Trademark services, Brand Development, Ecommerce solutions, Amazon-related services, Content Development, LMS/CMS Development, and Cloud-Based services.',
+    question: 'What services does DigiCare Web offer?',
+    answer: 'DigiCare Web lists Digital Marketing, Software Development, Digital Transformation, Web Development, Google Advertising, Business Consulting, Animation and Trademark services, Brand Development, Ecommerce solutions, Amazon-related services, Content Development, LMS/CMS Development, and Cloud-Based services.',
   },
   {
     question: 'How can Digital Marketing benefit my business?',
     answer: 'The published FAQ says digital marketing can improve online visibility, engage a target audience, and support return on investment through SEO, social media, and PPC advertising.',
   },
   {
-    question: 'What makes DIGICARE WEB’s Software Development stand out?',
+    question: 'What makes DigiCare Web’s Software Development stand out?',
     answer: 'The published answer describes tailored, scalable, efficient, and future-ready software applications aligned with individual business goals.',
   },
   {
-    question: 'What industries does DIGICARE WEB serve?',
+    question: 'What industries does DigiCare Web serve?',
     answer: 'The published FAQ names ecommerce, finance, healthcare, education, and manufacturing among the industries served, while noting that the list is not exhaustive.',
   },
   {
@@ -323,16 +323,16 @@ export const faqItems = [
     answer: 'Yes. The published FAQ describes support for product listing optimization, Amazon PPC campaigns, and improving an overall presence on the platform.',
   },
   {
-    question: 'What sets DIGICARE WEB’s Ecommerce Solutions apart?',
+    question: 'What sets DigiCare Web’s Ecommerce Solutions apart?',
     answer: 'The published answer highlights user experience optimization, conversion rate optimization, and strategies tailored to a specific online shopping experience.',
   },
   {
     question: 'How do you handle data security and privacy?',
-    answer: 'The published FAQ states that DIGICARE WEB uses industry-standard security measures, follows privacy practices, and complies with relevant regulations.',
+    answer: 'The published FAQ states that DigiCare Web uses industry-standard security measures, follows privacy practices, and complies with relevant regulations.',
   },
   {
     question: 'Do you offer ongoing support and maintenance?',
-    answer: 'Yes. The published FAQ says support and maintenance can address issues, updates, and technical assistance for software and websites developed by DIGICARE WEB.',
+    answer: 'Yes. The published FAQ says support and maintenance can address issues, updates, and technical assistance for software and websites developed by DigiCare Web.',
   },
   {
     question: 'Can you assist with staff training for new systems or software?',
@@ -341,11 +341,11 @@ export const faqItems = [
 ]
 
 export const privacySections = [
-  ['Information collection', 'DIGICARE WEB states that client information may be collected through email, phone, contact forms, order forms, and creative briefs. The published policy lists names, company details, billing address, email, phone, fax, order details, residence, comments, IP address, browser version, operating system, and visit time.'],
+  ['Information collection', 'DigiCare Web states that client information may be collected through email, phone, contact forms, order forms, and creative briefs. The published policy lists names, company details, billing address, email, phone, fax, order details, residence, comments, IP address, browser version, operating system, and visit time.'],
   ['Use of collected information', 'The published policy says collected information is used to understand requested services, process billing, communicate about orders and delivery, improve marketing, and send updates or promotional information where permitted.'],
   ['Privacy of payments', 'The policy states that payment processors use Secure Sockets Layer protection for billing information and payment processing.'],
   ['Confidentiality', 'The published policy describes client information as confidential and says access is limited to designated members, except where disclosure is authorized or required by law.'],
-  ['Amendments', 'DIGICARE WEB states that it may amend the privacy policy for security reasons and will provide notice of material updates.'],
+  ['Amendments', 'DigiCare Web states that it may amend the privacy policy for security reasons and will provide notice of material updates.'],
   ['Conditions of information disclosure', 'The policy states that disclosure may occur when required for judicial proceedings, a court order, or another legal process.'],
   ['Contact', 'The published policy directs privacy questions to the website contact form.'],
 ]
