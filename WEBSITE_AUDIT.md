@@ -41,7 +41,7 @@ Service detail pages share the same hero, benefits, packages/enquiry, contact, h
 - **Responsive UI:** mobile navigation's hidden contact link is removed from keyboard tab order. Shared service and page layouts stack at the existing tablet breakpoint; catalog and package grids reduce to one column on narrow screens. Button height and page gutters now use shared tokens.
 - **Motion and scrolling:** homepage video and pointer parallax respect reduced-motion preferences. ScrollTrigger still pins and translates the desktop services rail; its pin anticipation is set to one, mobile keeps its native horizontal snap rail, and animation cleanup remains in place.
 - **Brand and metadata:** normalized visible brand references to DigiCare Web, aligned the primary logo accents with the specified cyan/white, corrected the structured-data email, and moved canonical/OG/Twitter metadata to the `www` host.
-- **SEO delivery:** `scripts/generate-route-pages.js` emits static route HTML with route-specific metadata during `npm run build`, using `src/seo.js` and `serviceCatalog`. It also generates the sitemap from the same routes. The payment page is noindex and omitted from the sitemap; unknown routes are noindex after app startup. No lastmod values are fabricated.
+- **Technical search metadata (not a service):** `scripts/generate-route-pages.js` emits static route HTML with route-specific metadata during `npm run build`, using `src/seo.js` and `serviceCatalog`. It also generates the sitemap from the same routes. The payment page is noindex and omitted from the sitemap; unknown routes are noindex after app startup. No lastmod values are fabricated.
 
 ## Shared layout and responsive behavior
 

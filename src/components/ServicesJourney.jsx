@@ -179,7 +179,7 @@ export function ServiceArtwork({ type }) {
         <div className="service-art__result service-art__result--active">
           <span>Campaign preview</span>
           <b>Search placement</b>
-          <i>Keyword / audience / budget</i>
+          <i>Audience / budget / placement</i>
         </div>
         <div className="service-art__result"><span>Display placement</span><b>Audience selection</b></div>
       </div>

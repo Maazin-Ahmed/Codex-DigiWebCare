@@ -69,4 +69,4 @@ writeFileSync(paymentPath, buildRouteHtml('/payment', null))
 writeFileSync(resolve(distRoot, 'sitemap.xml'), sitemap)
 writeFileSync(resolve(projectRoot, 'public', 'sitemap.xml'), sitemap)
 
-console.log(`Generated SEO metadata for ${routes.length} indexable routes and /payment.`)
+console.log(`Generated route metadata for ${routes.length} indexable routes and /payment.`)
