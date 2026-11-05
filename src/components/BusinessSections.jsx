@@ -2,7 +2,9 @@ import ContactForm from './ContactForm.jsx'
 import SiteHeader from './SiteHeader.jsx'
 import BrandLogo from './BrandLogo.jsx'
 import { ServiceArtwork } from './ServicesJourney.jsx'
-import { brand, faqItems, privacySections, serviceCatalog, termsSections } from '../content.js'
+import { brand, faqItems, privacySections, termsSections } from '../content.js'
+import { useCatalog } from '../services/CatalogContext.jsx'
+import { useCart } from '../cart/CartContext.jsx'
 
 export function PageHero({ eyebrow, title, lede, visual = 'transformation' }) {
   return (
@@ -78,6 +80,8 @@ export function DifferentiatorsSection() {
 }
 
 export function CapabilityDirectory() {
+  const { categories, services, loading, error, retry } = useCatalog()
+  const categoriesById = new Map(categories.map((category) => [category.id, category.name]))
   return (
     <section className="capability-directory" aria-labelledby="capability-title">
       <div className="section-heading section-heading--split">
@@ -86,15 +90,19 @@ export function CapabilityDirectory() {
         </div>
         <a className="button button--outline" href="/service">View service catalog <span aria-hidden="true">↗</span></a>
       </div>
-      <ul className="capability-directory__list">
-        {serviceCatalog.map((service) => (
-          <li key={service.name}>
-            <b><a href={`/${service.slug}`}>{service.name}</a></b>
-            <em>{service.scope}</em>
-            <i>{service.price}</i>
-          </li>
-        ))}
-      </ul>
+      {loading ? <p className="catalog-state" role="status">Loading services…</p> : error ? (
+        <div className="catalog-state catalog-state--error" role="alert"><p>Services could not be loaded.</p><button className="button button--outline" type="button" onClick={retry}>Try again</button></div>
+      ) : !services.length ? <p className="catalog-state">No active services are currently available.</p> : (
+        <ul className="capability-directory__list">
+          {services.map((service) => (
+            <li key={service.id}>
+              <b><a href={`/${service.slug}`}>{service.name}</a></b>
+              <em>{service.short_description || service.description}</em>
+              <i>{categoriesById.get(service.category_id)} · {service.price_label}</i>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
@@ -183,27 +191,36 @@ export function ContactSection({ page = false, showDetails = false }) {
 
 function ServiceCatalogCard({ service, onNavigate }) {
   const href = `/${service.slug}`
+  const { addItem } = useCart()
+  const canPurchase = service.pricing_type === 'fixed' && Number.isFinite(Number(service.price))
 
   return (
-    <a className="catalog-card" href={href} onClick={(event) => onNavigate?.(event, href)}>
-      <div className={`catalog-card__visual catalog-card__visual--${service.heroVisual || service.visual}`} aria-hidden="true">
+    <article className="catalog-card">
+      <a className={`catalog-card__visual catalog-card__visual--${service.heroVisual || service.visual}`} href={href} onClick={(event) => onNavigate?.(event, href)} aria-label={`View ${service.name}`}>
         <ServiceArtwork type={service.heroVisual || service.visual} />
         <span className="catalog-card__visual-label">DigiCare Web / Service</span>
-      </div>
+      </a>
       <div className="catalog-card__body">
         <div className="catalog-card__meta">
-          <span className="eyebrow">Published price</span>
+          <span className="eyebrow">{service.categoryName || 'Service'}</span>
           <span className="catalog-card__price">{service.price}</span>
         </div>
-        <h3 className="catalog-card__title">{service.name}</h3>
+        <h3 className="catalog-card__title"><a href={href} onClick={(event) => onNavigate?.(event, href)}>{service.name}</a></h3>
         <p className="catalog-card__description">{service.scope}</p>
-        <span className="catalog-card__action">Explore service <span aria-hidden="true">↗</span></span>
+        <div className="catalog-card__actions">
+          <a className="catalog-card__action" href={href} onClick={(event) => onNavigate?.(event, href)}>Explore service <span aria-hidden="true">↗</span></a>
+          {canPurchase && <button className="button button--outline catalog-card__add" type="button" onClick={() => addItem({ id: service.id, name: service.name, unitPrice: Number(service.price), quantityAllowed: service.quantity_allowed, maxQuantity: service.max_quantity })}>Add to cart</button>}
+        </div>
       </div>
-    </a>
+    </article>
   )
 }
 
 export function ServiceCatalog({ onNavigate }) {
+  const { categories, services, loading, error, retry } = useCatalog()
+  const categoriesById = new Map(categories.map((category) => [category.id, category.name]))
+  const displayServices = services.map((service) => ({ ...service, categoryName: categoriesById.get(service.category_id) }))
+
   return (
     <section className="catalog-section" aria-labelledby="catalog-title">
       <div className="section-heading section-heading--split">
@@ -213,11 +230,13 @@ export function ServiceCatalog({ onNavigate }) {
         </div>
         <p>Published prices are shown in US dollars where available. Custom scopes and final billing terms should be confirmed with DigiCare Web.</p>
       </div>
-      <div className="catalog-grid">
-        {serviceCatalog.map((service) => (
-          <ServiceCatalogCard key={service.name} service={service} onNavigate={onNavigate} />
-        ))}
-      </div>
+      {loading ? <div className="catalog-state" role="status">Loading services…</div> : error ? (
+        <div className="catalog-state catalog-state--error" role="alert"><p>Services could not be loaded. {error}</p><button className="button button--outline" type="button" onClick={retry}>Try again</button></div>
+      ) : !displayServices.length ? <div className="catalog-state">No active services are currently available.</div> : (
+        <div className="catalog-grid">
+          {displayServices.map((service) => <ServiceCatalogCard key={service.id} service={service} onNavigate={onNavigate} />)}
+        </div>
+      )}
       <p className="catalog-note">Third-party costs such as advertising spend, hosting, domains, premium plugins or themes, stock media, and government or registry filing fees may be separate. Custom quotes require a conversation about scope.</p>
     </section>
   )
@@ -303,6 +322,8 @@ export function SiteFooter({ onNavigate }) {
 }
 
 export function ServiceDetailPage({ service, onNavigate }) {
+  const { addItem } = useCart()
+  const canPurchase = service.pricing_type === 'fixed' && Number.isFinite(Number(service.price))
   return (
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/service" onNavigate={onNavigate} />
@@ -311,7 +332,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
           <div className="service-detail__intro">
             <p className="eyebrow">{brand.displayName} / Service</p>
             <h1 id="service-detail-title">{service.name}</h1>
-            <p className="service-detail__headline">{service.headline}</p>
+            <p className="service-detail__headline">{service.short_description || service.headline}</p>
             {service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             <a className="button button--primary" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}&body=${encodeURIComponent(`Hello DigiCare Web,\n\nI would like to discuss ${service.name}.\n\n`)}`}>
               {service.cta || 'Discuss this service'} <span aria-hidden="true">↗</span>
@@ -338,7 +359,19 @@ export function ServiceDetailPage({ service, onNavigate }) {
             </div>
             <p>Published prices and package details are shown as listed. Contact DigiCare Web to confirm the current scope and terms.</p>
           </div>
-          {service.packages.length > 0 ? (
+          {canPurchase ? (
+            <div className="service-packages__enquiry service-packages__enquiry--fixed">
+              <div>
+                <p className="eyebrow">Database price / USD</p>
+                <p className="service-packages__price">{service.price_label}</p>
+              </div>
+              <div>
+                <h3>{service.name}</h3>
+                <p>Price and availability are confirmed from the live service catalogue.</p>
+              </div>
+              <button className="button button--outline" type="button" onClick={() => addItem({ id: service.id, name: service.name, unitPrice: Number(service.price), quantityAllowed: service.quantity_allowed, maxQuantity: service.max_quantity })}>Add to cart <span aria-hidden="true">↗</span></button>
+            </div>
+          ) : service.packages.length > 0 ? (
             <div className={`service-packages__list${service.packages.length === 1 ? ' service-packages__list--single' : ''}`}>
               {service.packages.map((item) => (
                 <article key={item.name}>
@@ -357,7 +390,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
               </div>
               <div>
                 <h3>Discuss this service</h3>
-                <p>The published page lists a consultation rather than a priced package.</p>
+                <p>This service is listed as {service.price_label}. Contact DigiCare Web to confirm scope and next steps.</p>
               </div>
               <a className="button button--outline" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}`}>{service.cta || 'Enquire about this service'} <span aria-hidden="true">↗</span></a>
             </div>

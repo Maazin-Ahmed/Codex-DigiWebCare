@@ -35,6 +35,21 @@ export const pageMetadata = {
     description: 'Request information about a DigiCare Web package and confirm its scope, billing, and next steps with the team.',
     noindex: true,
   },
+  '/cart': {
+    title: 'Your Cart — DigiCare Web',
+    description: 'Review selected DigiCare Web services.',
+    noindex: true,
+  },
+  '/checkout': {
+    title: 'Guest Checkout — DigiCare Web',
+    description: 'Enter billing details for a DigiCare Web service order.',
+    noindex: true,
+  },
+  '/order-confirmation': {
+    title: 'Order Confirmation — DigiCare Web',
+    description: 'Review your DigiCare Web order confirmation.',
+    noindex: true,
+  },
 }
 
 export function getPageMetadata(route, service) {

@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { brand, featuredServices } from '../content.js'
+import { brand, featuredServices as featuredServiceDesign } from '../content.js'
+import { useCatalog } from '../services/CatalogContext.jsx'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -201,6 +202,11 @@ export function ServiceArtwork({ type }) {
 }
 
 function ServicesJourney({ onNavigate }) {
+  const { services, loading, error, retry } = useCatalog()
+  const featuredServices = featuredServiceDesign.flatMap((design) => {
+    const service = services.find((item) => item.slug === design.slug)
+    return service ? [{ ...design, name: service.name, line: service.short_description || service.description }] : []
+  })
   const sectionRef = useRef(null)
   const viewportRef = useRef(null)
   const trackRef = useRef(null)
@@ -331,7 +337,7 @@ function ServicesJourney({ onNavigate }) {
       mobileCleanup()
       disposed = true
     }
-  }, [])
+  }, [services])
 
   return (
     <section className="services-journey" id="services" ref={sectionRef} aria-labelledby="services-title">
@@ -375,6 +381,15 @@ function ServicesJourney({ onNavigate }) {
                 </div>
               </a>
             ))}
+            {!featuredServices.length && (loading || error) && (
+              <div className="service-panel service-panel--loading">
+                <div className="service-panel__copy">
+                  <p className="eyebrow">Service catalogue</p>
+                  <h3>{loading ? 'Loading services…' : 'Services are temporarily unavailable.'}</h3>
+                  {error && <button className="button button--outline-light" type="button" onClick={retry}>Try again</button>}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

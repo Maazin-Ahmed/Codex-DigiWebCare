@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { brand, navigation } from '../content.js'
 import BrandLogo from './BrandLogo.jsx'
+import CartIcon from './CartIcon.jsx'
 
 function SiteHeader({ currentPath = '/', onNavigate, overlay = false }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -47,6 +48,8 @@ function SiteHeader({ currentPath = '/', onNavigate, overlay = false }) {
       <div className="header-meta">
         <a href={`mailto:${brand.email}`}>Start a conversation</a>
       </div>
+
+      <CartIcon onNavigate={handleLink} />
 
       <button
         className="menu-button"

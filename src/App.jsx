@@ -19,6 +19,11 @@ import {
 } from './components/BusinessSections.jsx'
 import { brand, featuredServices, serviceCatalog } from './content.js'
 import { canonicalOrigin, canonicalPathFor, getPageMetadata } from './seo.js'
+import CartPage from './pages/CartPage.jsx'
+import CheckoutPage from './pages/CheckoutPage.jsx'
+import OrderConfirmationPage from './pages/OrderConfirmationPage.jsx'
+import { useCart } from './cart/CartContext.jsx'
+import { useCatalog } from './services/CatalogContext.jsx'
 import './styles.css'
 
 const Hero3D = lazy(() => import('./components/Hero3D.jsx'))
@@ -54,6 +59,7 @@ function updatePageMetadata(route, service) {
 
   document.title = metadata.title
   document.querySelector('meta[name="description"]')?.setAttribute('content', metadata.description)
+  document.querySelector('meta[name="robots"]')?.setAttribute('content', metadata.noindex ? 'noindex, nofollow' : 'index, follow')
   document.querySelector('link[rel="canonical"]')?.setAttribute('href', canonicalUrl)
   document.querySelector('meta[property="og:title"]')?.setAttribute('content', metadata.title)
   document.querySelector('meta[property="og:description"]')?.setAttribute('content', metadata.description)
@@ -68,6 +74,11 @@ function updatePageMetadata(route, service) {
 }
 
 function HomePage({ onNavigate }) {
+  const { services } = useCatalog()
+  const featuredFromDatabase = featuredServices.flatMap((design) => {
+    const service = services.find((item) => item.slug === design.slug)
+    return service ? [{ ...design, name: service.name }] : []
+  })
   const heroRef = useRef(null)
   const [videoFailed, setVideoFailed] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -190,7 +201,7 @@ function HomePage({ onNavigate }) {
 
           <aside className="hero__rail" aria-label={`${brand.name} service areas`}>
             <ul>
-              {featuredServices.map((service) => <li key={service.name}>{service.name}</li>)}
+              {featuredFromDatabase.map((service) => <li key={service.name}>{service.name}</li>)}
             </ul>
           </aside>
         </div>
@@ -267,6 +278,9 @@ function ContactPage({ onNavigate }) {
 
 function App() {
   const [route, setRoute] = useState(() => normalizePath(window.location.pathname))
+  const [orderConfirmation, setOrderConfirmation] = useState(null)
+  const { clearCart } = useCart()
+  const { services, loading: catalogLoading, error: catalogError, retry: retryCatalog } = useCatalog()
 
   useEffect(() => {
     const handlePopState = () => setRoute(normalizePath(window.location.pathname))
@@ -275,9 +289,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const service = serviceCatalog.find((item) => `/${item.slug}` === route)
+    const service = services.find((item) => `/${item.slug}` === route)
     updatePageMetadata(route, service)
-  }, [route])
+  }, [route, services])
 
   const handleNavigate = (event, href) => {
     if (!href || !href.startsWith('/')) return
@@ -293,6 +307,18 @@ function App() {
     }
   }
 
+  const handleOrderCreated = (confirmation) => {
+    setOrderConfirmation(confirmation)
+    clearCart()
+    window.history.pushState({}, '', '/order-confirmation')
+    setRoute('/order-confirmation')
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }
+
+  if (route === '/cart') return <CartPage onNavigate={handleNavigate} />
+  if (route === '/checkout') return <CheckoutPage onNavigate={handleNavigate} onOrderCreated={handleOrderCreated} />
+  if (route === '/order-confirmation') return <OrderConfirmationPage confirmation={orderConfirmation} onNavigate={handleNavigate} />
+
   if (route === '/') return <HomePage onNavigate={handleNavigate} />
   if (route === '/about-us') return <AboutPage onNavigate={handleNavigate} />
   if (route === '/service') return <ServicesPage onNavigate={handleNavigate} />
@@ -302,10 +328,25 @@ function App() {
   if (route === '/terms-and-conditions') return <LegalPage type="terms" onNavigate={handleNavigate} />
   if (route === '/payment') return <PaymentPage onNavigate={handleNavigate} />
 
-  const service = serviceCatalog.find((item) => `/${item.slug}` === route)
+  const service = services.find((item) => `/${item.slug}` === route)
   if (service) return <ServiceDetailPage service={service} onNavigate={handleNavigate} />
 
+  if (catalogLoading) return <ServiceRouteState onNavigate={handleNavigate} message="Loading service details…" />
+  if (catalogError && serviceCatalog.some((item) => `/${item.slug}` === route)) {
+    return <ServiceRouteState onNavigate={handleNavigate} message={`Service details could not be loaded. ${catalogError}`} retry={retryCatalog} />
+  }
+
   return <NotFoundPage onNavigate={handleNavigate} />
+}
+
+function ServiceRouteState({ onNavigate, message, retry }) {
+  return (
+    <div className="site-shell site-shell--page">
+      <SiteHeader currentPath="/service" onNavigate={onNavigate} />
+      <main className="page-content commerce-page"><section className="commerce-empty" role={retry ? 'alert' : 'status'}><h1>Service information</h1><p>{message}</p>{retry && <button className="button button--outline" type="button" onClick={retry}>Try again</button>}</section></main>
+      <SiteFooter onNavigate={onNavigate} />
+    </div>
+  )
 }
 
 export default App
