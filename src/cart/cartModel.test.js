@@ -4,7 +4,7 @@ import { addCartItem, normalizeCart, removeCartItem, setCartItemQuantity, summar
 import { readCart, writeCart } from './cartStorage.js'
 
 test('cart adds by service ID and merges duplicates into one line', () => {
-  const service = { id: 'svc-1', name: 'Web build', unitPrice: 25, quantityAllowed: true, maxQuantity: 5 }
+  const service = { id: 'svc-1', name: 'Web build', unitPrice: 25, pricingType: 'fixed', quantityAllowed: true, maxQuantity: 5 }
   const once = addCartItem([], service, 1)
   const twice = addCartItem(once, service, 2)
   assert.equal(twice.length, 1)
@@ -38,7 +38,7 @@ test('local cart restores valid snapshots and merges duplicate persisted IDs', (
 })
 
 test('quantity respects the service configuration', () => {
-  const once = addCartItem([], { id: 'single', name: 'Consultation', unitPrice: 100, quantityAllowed: false, maxQuantity: 1 }, 4)
+  const once = addCartItem([], { id: 'single', name: 'Fixed service', unitPrice: 100, pricingType: 'fixed', quantityAllowed: false, maxQuantity: 1 }, 4)
   const unchanged = setCartItemQuantity(once, 'single', 5)
   assert.equal(unchanged[0].quantity, 1)
   assert.equal(unchanged[0].quantityAllowed, false)

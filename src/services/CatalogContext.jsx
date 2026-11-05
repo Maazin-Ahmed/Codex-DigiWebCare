@@ -1,20 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { serviceCatalog as editorialServices } from '../content.js'
 import { fetchActiveCatalog } from './serviceApi.js'
+import { mapServiceRecord } from './serviceCatalogModel.js'
 
 const CatalogContext = createContext(null)
-
-function enrichService(row) {
-  const editorial = editorialServices.find((service) => service.slug === row.slug)
-  return {
-    ...editorial,
-    ...row,
-    scope: row.short_description || row.description,
-    price: row.price_label,
-    // The database has no package table. Never show stale hardcoded package prices.
-    packages: [],
-  }
-}
 
 export function CatalogProvider({ children }) {
   const [categories, setCategories] = useState([])
@@ -31,7 +19,7 @@ export function CatalogProvider({ children }) {
       .then((catalog) => {
         if (!active) return
         setCategories(catalog.categories)
-        setServices(catalog.services.map(enrichService))
+        setServices(catalog.services.map(mapServiceRecord))
       })
       .catch((reason) => {
         if (!active) return

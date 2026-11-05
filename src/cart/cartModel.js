@@ -1,3 +1,5 @@
+import { isFixedPriceService } from '../services/serviceContact.js'
+
 export function normalizeCart(items) {
   if (!Array.isArray(items)) return []
   return items.reduce((normalized, item) => {
@@ -17,8 +19,8 @@ export function normalizeCart(items) {
 }
 
 export function addCartItem(items, service, quantity = 1) {
-  if (!service || service.id == null || !service.name || !Number.isFinite(Number(service.unitPrice)) || Number(service.unitPrice) < 0) {
-    throw new Error('A cart item requires a service ID, name, and non-negative numeric display price.')
+  if (!service || !isFixedPriceService({ pricing_type: service.pricingType, price: service.unitPrice }) || service.id == null || !service.name || Number(service.unitPrice) < 0) {
+    throw new Error('Only fixed-price services with a service ID, name, and numeric database price can be added.')
   }
   const addition = Math.max(1, Math.floor(Number(quantity) || 1))
   const next = normalizeCart(items)
@@ -58,3 +60,4 @@ export function summarizeCart(items) {
     subtotal: Math.round(normalized.reduce((total, item) => total + item.unitPrice * item.quantity, 0) * 100) / 100,
   }
 }
+

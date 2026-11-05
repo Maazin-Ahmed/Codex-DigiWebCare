@@ -1,11 +1,15 @@
 import SiteHeader from '../components/SiteHeader.jsx'
 import { SiteFooter } from '../components/BusinessSections.jsx'
 import { useCart } from '../cart/CartContext.jsx'
+import { useCatalog } from '../services/CatalogContext.jsx'
+import { isCartServiceEligible } from '../services/serviceContact.js'
 
 const usd = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
 
 function CartPage({ onNavigate }) {
   const { items, itemCount, subtotal, setQuantity, removeItem, clearCart } = useCart()
+  const { services, loading: catalogLoading, error: catalogError } = useCatalog()
+  const canCheckout = !catalogLoading && !catalogError && items.length > 0 && items.every((item) => isCartServiceEligible(item, services))
 
   const confirmClear = () => {
     if (window.confirm('Clear all services from your cart?')) clearCart()
@@ -55,7 +59,12 @@ function CartPage({ onNavigate }) {
               <p className="eyebrow">Summary</p>
               <div><span>Subtotal</span><strong>{usd(subtotal)}</strong></div>
               <p>Final order totals are confirmed by the server at checkout.</p>
-              <a className="button button--primary" href="/checkout" onClick={(event) => onNavigate?.(event, '/checkout')}>Proceed to checkout <span aria-hidden="true">↗</span></a>
+              {catalogLoading && <p role="status">Verifying service prices…</p>}
+              {catalogError && <p role="alert">Service details could not be verified. Checkout is unavailable until the catalogue loads.</p>}
+              {!catalogLoading && !catalogError && !canCheckout && <p role="alert">Remove services that are no longer active or are not fixed-price before checkout.</p>}
+              {canCheckout
+                ? <a className="button button--primary" href="/checkout" onClick={(event) => onNavigate?.(event, '/checkout')}>Proceed to checkout <span aria-hidden="true">↗</span></a>
+                : <button className="button button--primary" type="button" disabled>Proceed to checkout</button>}
             </aside>
           </div>
         )}

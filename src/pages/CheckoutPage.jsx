@@ -4,6 +4,8 @@ import { SiteFooter } from '../components/BusinessSections.jsx'
 import { useCart } from '../cart/CartContext.jsx'
 import { supabase } from '../supabaseClient.js'
 import { validateGuestCheckout } from '../checkout/validation.js'
+import { useCatalog } from '../services/CatalogContext.jsx'
+import { isCartServiceEligible } from '../services/serviceContact.js'
 
 const initialForm = {
   full_name: '', email: '', country_code: '', phone_number: '',
@@ -14,6 +16,7 @@ const usd = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', curr
 
 function CheckoutPage({ onNavigate, onOrderCreated }) {
   const { items, subtotal } = useCart()
+  const { services, loading: catalogLoading, error: catalogError, retry: retryCatalog } = useCatalog()
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
   const [requestError, setRequestError] = useState('')
@@ -118,6 +121,12 @@ function CheckoutPage({ onNavigate, onOrderCreated }) {
             <h2>Your cart is empty.</h2>
             <a className="button button--primary" href="/service" onClick={(event) => onNavigate?.(event, '/service')}>Browse services <span aria-hidden="true">↗</span></a>
           </section>
+        ) : catalogLoading ? (
+          <section className="commerce-empty" role="status"><h2>Verifying your cart…</h2></section>
+        ) : catalogError ? (
+          <section className="commerce-empty" role="alert"><h2>Service details unavailable.</h2><p>We cannot verify which services may be checked out.</p><button className="button button--outline" type="button" onClick={retryCatalog}>Try again</button></section>
+        ) : !items.every((item) => isCartServiceEligible(item, services)) ? (
+          <section className="commerce-empty" role="alert"><h2>Cart needs an update.</h2><p>Only active fixed-price services can proceed to checkout. Remove other services from your cart.</p><a className="button button--primary" href="/cart" onClick={(event) => onNavigate?.(event, '/cart')}>Review cart <span aria-hidden="true">↗</span></a></section>
         ) : (
           <div className="checkout-layout">
             <form className="checkout-form" onSubmit={submit} noValidate>

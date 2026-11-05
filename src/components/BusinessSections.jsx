@@ -5,6 +5,7 @@ import { ServiceArtwork } from './ServicesJourney.jsx'
 import { brand, faqItems, privacySections, termsSections } from '../content.js'
 import { useCatalog } from '../services/CatalogContext.jsx'
 import { useCart } from '../cart/CartContext.jsx'
+import { buildConsultationMailto, buildServiceCartItem, buildServiceEnquiryMailto, isFixedPriceService, serviceActionLabel } from '../services/serviceContact.js'
 
 export function PageHero({ eyebrow, title, lede, visual = 'transformation' }) {
   return (
@@ -192,7 +193,9 @@ export function ContactSection({ page = false, showDetails = false }) {
 function ServiceCatalogCard({ service, onNavigate }) {
   const href = `/${service.slug}`
   const { addItem } = useCart()
-  const canPurchase = service.pricing_type === 'fixed' && Number.isFinite(Number(service.price))
+  const canPurchase = isFixedPriceService(service)
+  const isEnquiry = service.pricing_type === 'range' || service.pricing_type === 'custom_quote'
+  const isConsultation = service.pricing_type === 'consultation'
 
   return (
     <article className="catalog-card">
@@ -203,13 +206,15 @@ function ServiceCatalogCard({ service, onNavigate }) {
       <div className="catalog-card__body">
         <div className="catalog-card__meta">
           <span className="eyebrow">{service.categoryName || 'Service'}</span>
-          <span className="catalog-card__price">{service.price}</span>
+          <span className="catalog-card__price">{service.price_label}</span>
         </div>
         <h3 className="catalog-card__title"><a href={href} onClick={(event) => onNavigate?.(event, href)}>{service.name}</a></h3>
         <p className="catalog-card__description">{service.scope}</p>
         <div className="catalog-card__actions">
           <a className="catalog-card__action" href={href} onClick={(event) => onNavigate?.(event, href)}>Explore service <span aria-hidden="true">↗</span></a>
-          {canPurchase && <button className="button button--outline catalog-card__add" type="button" onClick={() => addItem({ id: service.id, name: service.name, unitPrice: Number(service.price), quantityAllowed: service.quantity_allowed, maxQuantity: service.max_quantity })}>Add to cart</button>}
+          {canPurchase && <button className="button button--outline catalog-card__add" type="button" onClick={() => addItem(buildServiceCartItem(service))}>{serviceActionLabel(service)}</button>}
+          {!canPurchase && isEnquiry && <a className="button button--outline catalog-card__add" href={buildServiceEnquiryMailto(service.name)}>{serviceActionLabel(service)}</a>}
+          {!canPurchase && isConsultation && <a className="button button--outline catalog-card__add" href={buildConsultationMailto(service.name)}>{serviceActionLabel(service)}</a>}
         </div>
       </div>
     </article>
@@ -323,7 +328,9 @@ export function SiteFooter({ onNavigate }) {
 
 export function ServiceDetailPage({ service, onNavigate }) {
   const { addItem } = useCart()
-  const canPurchase = service.pricing_type === 'fixed' && Number.isFinite(Number(service.price))
+  const canPurchase = isFixedPriceService(service)
+  const isEnquiry = service.pricing_type === 'range' || service.pricing_type === 'custom_quote'
+  const isConsultation = service.pricing_type === 'consultation'
   return (
     <div className="site-shell site-shell--page">
       <SiteHeader currentPath="/service" onNavigate={onNavigate} />
@@ -334,9 +341,6 @@ export function ServiceDetailPage({ service, onNavigate }) {
             <h1 id="service-detail-title">{service.name}</h1>
             <p className="service-detail__headline">{service.short_description || service.headline}</p>
             {service.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            <a className="button button--primary" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}&body=${encodeURIComponent(`Hello DigiCare Web,\n\nI would like to discuss ${service.name}.\n\n`)}`}>
-              {service.cta || 'Discuss this service'} <span aria-hidden="true">↗</span>
-            </a>
           </div>
           <div className={`service-detail__visual service-detail__visual--${service.visual}`} aria-hidden="true">
             <ServiceArtwork type={service.heroVisual || service.visual} />
@@ -369,7 +373,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
                 <h3>{service.name}</h3>
                 <p>Price and availability are confirmed from the live service catalogue.</p>
               </div>
-              <button className="button button--outline" type="button" onClick={() => addItem({ id: service.id, name: service.name, unitPrice: Number(service.price), quantityAllowed: service.quantity_allowed, maxQuantity: service.max_quantity })}>Add to cart <span aria-hidden="true">↗</span></button>
+              <button className="button button--outline" type="button" onClick={() => addItem(buildServiceCartItem(service))}>{serviceActionLabel(service)} <span aria-hidden="true">↗</span></button>
             </div>
           ) : service.packages.length > 0 ? (
             <div className={`service-packages__list${service.packages.length === 1 ? ' service-packages__list--single' : ''}`}>
@@ -386,13 +390,14 @@ export function ServiceDetailPage({ service, onNavigate }) {
             <div className="service-packages__enquiry">
               <div>
                 <p className="eyebrow">Published pricing</p>
-                <p className="service-packages__price">{service.price}</p>
+                <p className="service-packages__price">{service.price_label}</p>
               </div>
               <div>
                 <h3>Discuss this service</h3>
                 <p>This service is listed as {service.price_label}. Contact DigiCare Web to confirm scope and next steps.</p>
               </div>
-              <a className="button button--outline" href={`mailto:${brand.email}?subject=${encodeURIComponent(`${service.name} enquiry`)}`}>{service.cta || 'Enquire about this service'} <span aria-hidden="true">↗</span></a>
+              {isEnquiry && <a className="button button--outline" href={buildServiceEnquiryMailto(service.name)}>{serviceActionLabel(service)} <span aria-hidden="true">↗</span></a>}
+              {isConsultation && <a className="button button--outline" href={buildConsultationMailto(service.name)}>{serviceActionLabel(service)} <span aria-hidden="true">↗</span></a>}
             </div>
           )}
         </section>
