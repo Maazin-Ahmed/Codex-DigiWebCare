@@ -8,7 +8,12 @@ export function readCart() {
   try {
     const saved = window.localStorage.getItem(CART_STORAGE_KEY)
     const parsed = saved ? JSON.parse(saved) : []
-    return normalizeCart(parsed)
+    return normalizeCart(parsed, { applyQuantityLimits: false }).map((item) => ({
+      ...item,
+      available: false,
+      priceVerified: false,
+      unavailableReason: null,
+    }))
   } catch {
     return []
   }

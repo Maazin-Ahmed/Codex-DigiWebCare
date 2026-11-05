@@ -1,4 +1,5 @@
 import { brand } from '../content.js'
+import { isSupportedCurrency } from './pricing.js'
 
 export function buildServiceEnquiryMailto(serviceName) {
   const subject = `Service Enquiry - ${serviceName}`
@@ -24,7 +25,11 @@ export function isCartServiceEligible(item, services) {
   return Boolean(
     service
     && service.is_active
-    && isFixedPriceService(service),
+    && isFixedPriceService(service)
+    && item.available === true
+    && item.priceVerified === true
+    && Number(item.unitPrice) === Number(service.price)
+    && item.currency === service.currency,
   )
 }
 
@@ -33,18 +38,20 @@ export function isFixedPriceService(service) {
     service?.pricing_type === 'fixed'
     && service.price !== null
     && service.price !== undefined
-    && Number.isFinite(Number(service.price)),
+    && Number.isFinite(Number(service.price))
+    && isSupportedCurrency(service.currency),
   )
 }
 
 export function buildServiceCartItem(service) {
-  if (!isFixedPriceService(service)) {
+  if (service?.is_active !== true || !isFixedPriceService(service)) {
     throw new Error('Only fixed-price services with a database price can be added to the cart.')
   }
   return {
     id: service.id,
     name: service.name,
     unitPrice: Number(service.price),
+    currency: service.currency,
     quantityAllowed: service.quantity_allowed,
     maxQuantity: service.max_quantity,
     pricingType: service.pricing_type,

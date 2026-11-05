@@ -6,6 +6,7 @@ import { brand, faqItems, privacySections, termsSections } from '../content.js'
 import { useCatalog } from '../services/CatalogContext.jsx'
 import { useCart } from '../cart/CartContext.jsx'
 import { buildConsultationMailto, buildServiceCartItem, buildServiceEnquiryMailto, isFixedPriceService, serviceActionLabel } from '../services/serviceContact.js'
+import { formatServicePrice } from '../services/pricing.js'
 
 export function PageHero({ eyebrow, title, lede, visual = 'transformation' }) {
   return (
@@ -99,7 +100,7 @@ export function CapabilityDirectory() {
             <li key={service.id}>
               <b><a href={`/${service.slug}`}>{service.name}</a></b>
               <em>{service.short_description || service.description}</em>
-              <i>{categoriesById.get(service.category_id)} · {service.price_label}</i>
+              <i>{categoriesById.get(service.category_id)} · {formatServicePrice(service)}</i>
             </li>
           ))}
         </ul>
@@ -206,7 +207,7 @@ function ServiceCatalogCard({ service, onNavigate }) {
       <div className="catalog-card__body">
         <div className="catalog-card__meta">
           <span className="eyebrow">{service.categoryName || 'Service'}</span>
-          <span className="catalog-card__price">{service.price_label}</span>
+          <span className="catalog-card__price">{formatServicePrice(service)}</span>
         </div>
         <h3 className="catalog-card__title"><a href={href} onClick={(event) => onNavigate?.(event, href)}>{service.name}</a></h3>
         <p className="catalog-card__description">{service.scope}</p>
@@ -367,7 +368,7 @@ export function ServiceDetailPage({ service, onNavigate }) {
             <div className="service-packages__enquiry service-packages__enquiry--fixed">
               <div>
                 <p className="eyebrow"> Price / USD</p>
-                <p className="service-packages__price">{service.price_label}</p>
+                <p className="service-packages__price">{formatServicePrice(service)}</p>
               </div>
               <div>
                 <h3>{service.name}</h3>
@@ -390,11 +391,11 @@ export function ServiceDetailPage({ service, onNavigate }) {
             <div className="service-packages__enquiry">
               <div>
                 <p className="eyebrow">Published pricing</p>
-                <p className="service-packages__price">{service.price_label}</p>
+                <p className="service-packages__price">{formatServicePrice(service)}</p>
               </div>
               <div>
                 <h3>Discuss this service</h3>
-                <p>This service is listed as {service.price_label}. Contact DigiCare Web to confirm scope and next steps.</p>
+                <p>This service is listed as {formatServicePrice(service)}. Contact DigiCare Web to confirm scope and next steps.</p>
               </div>
               {isEnquiry && <a className="button button--outline" href={buildServiceEnquiryMailto(service.name)}>{serviceActionLabel(service)} <span aria-hidden="true">↗</span></a>}
               {isConsultation && <a className="button button--outline" href={buildConsultationMailto(service.name)}>{serviceActionLabel(service)} <span aria-hidden="true">↗</span></a>}

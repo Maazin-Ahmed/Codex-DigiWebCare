@@ -24,11 +24,13 @@ test('service action label follows the database pricing type', () => {
 test('only fixed-price database services can be represented as cart items', () => {
   assert.throws(() => buildServiceCartItem({ id: 'range', name: 'Range service', pricing_type: 'range', price: null }))
   assert.throws(() => buildServiceCartItem({ id: 'quote', name: 'Quote service', pricing_type: 'custom_quote', price: null }))
-  const eligible = { id: 'fixed', name: 'Fixed service', pricing_type: 'fixed', price: 20, is_active: true, quantity_allowed: false, max_quantity: 1 }
+  assert.throws(() => buildServiceCartItem({ id: 'inactive', name: 'Inactive service', pricing_type: 'fixed', price: 20, currency: 'USD', is_active: false }))
+  const eligible = { id: 'fixed', name: 'Fixed service', pricing_type: 'fixed', price: 20, currency: 'USD', is_active: true, quantity_allowed: false, max_quantity: 1 }
   assert.deepEqual(buildServiceCartItem(eligible), {
-    id: 'fixed', name: 'Fixed service', unitPrice: 20, quantityAllowed: false, maxQuantity: 1, pricingType: 'fixed',
+    id: 'fixed', name: 'Fixed service', unitPrice: 20, currency: 'USD', quantityAllowed: false, maxQuantity: 1, pricingType: 'fixed',
   })
-  assert.equal(isCartServiceEligible({ id: 'fixed' }, [eligible]), true)
+  assert.equal(isCartServiceEligible({ id: 'fixed', unitPrice: 20, currency: 'USD', available: true, priceVerified: true }, [eligible]), true)
+  assert.equal(isCartServiceEligible({ id: 'fixed', unitPrice: 999, currency: 'USD', available: true, priceVerified: true }, [eligible]), false)
   assert.equal(isCartServiceEligible({ id: 'range' }, [{ id: 'range', pricing_type: 'range', is_active: true }]), false)
   assert.equal(isCartServiceEligible({ id: 'quote' }, [{ id: 'quote', pricing_type: 'custom_quote', is_active: true }]), false)
 })
@@ -41,6 +43,7 @@ test('catalogue mapping retains the numeric DB price separately from its display
     pricing_type: 'fixed',
     price: 2500,
     price_label: '$2,500',
+    currency: 'USD',
     is_active: true,
     quantity_allowed: false,
     max_quantity: 1,

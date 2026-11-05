@@ -2,14 +2,21 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useReducer 
 import { readCart, writeCart } from './cartStorage.js'
 import { summarizeCart } from './cartModel.js'
 import { cartReducer, createCartState } from './cartReducer.js'
+import { useCatalog } from '../services/CatalogContext.jsx'
+import { buildServiceCartItem } from '../services/serviceContact.js'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
+  const { services, loading: catalogLoading, error: catalogError } = useCatalog()
   const [state, dispatch] = useReducer(cartReducer, undefined, () => createCartState(readCart()))
   const { items, notice } = state
 
   useEffect(() => writeCart(items), [items])
+
+  useEffect(() => {
+    if (!catalogLoading && !catalogError) dispatch({ type: 'reconcile-catalog', services })
+  }, [services, catalogLoading, catalogError])
 
   useEffect(() => {
     if (!notice) return undefined
@@ -20,8 +27,11 @@ export function CartProvider({ children }) {
   }, [notice])
 
   const addItem = useCallback((service, quantity = 1) => {
-    dispatch({ type: 'add', service, quantity })
-  }, [])
+    if (catalogLoading || catalogError) throw new Error('Service pricing must be verified before adding it to the cart.')
+    const currentService = services.find((item) => String(item.id) === String(service?.id) && item.is_active === true)
+    if (!currentService) throw new Error('This service is no longer available in the active catalogue.')
+    dispatch({ type: 'add', service: buildServiceCartItem(currentService), quantity })
+  }, [services, catalogLoading, catalogError])
 
   const setQuantity = useCallback((id, quantity) => dispatch({ type: 'set-quantity', id, quantity }), [])
 
@@ -30,16 +40,22 @@ export function CartProvider({ children }) {
   const clearCart = useCallback(() => dispatch({ type: 'clear' }), [])
 
   const summary = summarizeCart(items)
+  const pricesVerified = !catalogLoading && !catalogError && items.every((item) => item.available && item.priceVerified)
   const value = useMemo(() => ({
     items,
     itemCount: summary.itemCount,
     subtotal: summary.subtotal,
+    currency: summary.currency,
+    currencyConsistent: summary.currencyConsistent,
+    pricesVerified,
+    catalogLoading,
+    catalogError,
     notice,
     addItem,
     setQuantity,
     removeItem,
     clearCart,
-  }), [items, summary.itemCount, summary.subtotal, notice, addItem, setQuantity, removeItem, clearCart])
+  }), [items, summary.itemCount, summary.subtotal, summary.currency, summary.currencyConsistent, pricesVerified, catalogLoading, catalogError, notice, addItem, setQuantity, removeItem, clearCart])
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }

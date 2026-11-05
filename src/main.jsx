@@ -6,10 +6,10 @@ import { CatalogProvider } from './services/CatalogContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <CartProvider>
-      <CatalogProvider>
+    <CatalogProvider>
+      <CartProvider>
         <App />
-      </CatalogProvider>
-    </CartProvider>
+      </CartProvider>
+    </CatalogProvider>
   </StrictMode>,
 )

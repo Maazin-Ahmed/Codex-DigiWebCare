@@ -1,9 +1,6 @@
 import SiteHeader from '../components/SiteHeader.jsx'
 import { SiteFooter } from '../components/BusinessSections.jsx'
-
-const usd = (amount) => Number.isFinite(Number(amount))
-  ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(amount))
-  : '—'
+import { formatCurrency } from '../services/pricing.js'
 
 function OrderConfirmationPage({ confirmation, onNavigate }) {
   if (!confirmation) {
@@ -33,12 +30,12 @@ function OrderConfirmationPage({ confirmation, onNavigate }) {
             <div><h3>Billing address</h3><p>{billingAddress.address_line_1}{billingAddress.address_line_2 && <><br />{billingAddress.address_line_2}</>}<br />{billingAddress.city}, {billingAddress.state} {billingAddress.postal_code}<br />{billingAddress.country}</p></div>
           </div>
           <div className="confirmation-lines">
-            {items.map((item) => <div key={item.id}><span>{item.name} × {item.quantity}</span><strong>{usd(item.lineTotal)}</strong></div>)}
+            {items.map((item) => <div key={item.id}><span>{item.name} × {item.quantity}</span><strong>{formatCurrency(item.lineTotal, order.currency)}</strong></div>)}
           </div>
           <div className="confirmation-totals">
-            <div><span>Subtotal</span><strong>{usd(order.subtotal)}</strong></div>
-            <div><span>Tax</span><strong>{usd(order.tax_amount)}</strong></div>
-            <div className="confirmation-totals__grand"><span>Total</span><strong>{usd(order.total_amount)}</strong></div>
+            <div><span>Subtotal</span><strong>{formatCurrency(order.subtotal, order.currency)}</strong></div>
+            <div><span>Tax</span><strong>{formatCurrency(order.tax_amount, order.currency)}</strong></div>
+            <div className="confirmation-totals__grand"><span>Total</span><strong>{formatCurrency(order.total_amount, order.currency)}</strong></div>
             <div><span>Payment status</span><strong>Pending</strong></div>
           </div>
           <p className="confirmation-note">No payment was collected. This document is an order confirmation / proforma bill only.</p>

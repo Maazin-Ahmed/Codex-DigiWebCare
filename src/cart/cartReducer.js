@@ -1,4 +1,4 @@
-import { addCartItem, normalizeCart, removeCartItem, setCartItemQuantity } from './cartModel.js'
+import { addCartItem, normalizeCart, reconcileCartItems, removeCartItem, setCartItemQuantity } from './cartModel.js'
 
 function withNotice(state, items, id) {
   const product = items.find((item) => item.id === String(id))
@@ -12,10 +12,14 @@ function withNotice(state, items, id) {
 }
 
 export function createCartState(items = []) {
-  return { items: normalizeCart(items), sequence: 0, notice: null }
+  return { items: normalizeCart(items, { applyQuantityLimits: false }), sequence: 0, notice: null }
 }
 
 export function cartReducer(state, action) {
+  if (action.type === 'reconcile-catalog') {
+    return { ...state, items: reconcileCartItems(state.items, action.services) }
+  }
+
   if (action.type === 'add') {
     const previous = state.items.find((item) => item.id === String(action.service.id))
     const items = addCartItem(state.items, action.service, action.quantity)

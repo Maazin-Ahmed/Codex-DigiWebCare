@@ -4,18 +4,18 @@ import { SiteFooter } from '../components/BusinessSections.jsx'
 import { useCart } from '../cart/CartContext.jsx'
 import { supabase } from '../supabaseClient.js'
 import { validateGuestCheckout } from '../checkout/validation.js'
+import { buildGuestOrderPayload } from '../checkout/orderPayload.js'
 import { useCatalog } from '../services/CatalogContext.jsx'
 import { isCartServiceEligible } from '../services/serviceContact.js'
+import { formatCurrency, isSupportedCurrency } from '../services/pricing.js'
 
 const initialForm = {
   full_name: '', email: '', country_code: '', phone_number: '',
   address_line_1: '', address_line_2: '', city: '', state: '', postal_code: '', country: '',
 }
 
-const usd = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
-
 function CheckoutPage({ onNavigate, onOrderCreated }) {
-  const { items, subtotal } = useCart()
+  const { items, subtotal, currency, currencyConsistent, pricesVerified } = useCart()
   const { services, loading: catalogLoading, error: catalogError, retry: retryCatalog } = useCatalog()
   const [form, setForm] = useState(initialForm)
   const [errors, setErrors] = useState({})
@@ -38,6 +38,10 @@ function CheckoutPage({ onNavigate, onOrderCreated }) {
       setRequestError('Your cart is empty. Add a service before checkout.')
       return
     }
+    if (catalogLoading || catalogError || !pricesVerified || !currencyConsistent || !items.every((item) => isCartServiceEligible(item, services))) {
+      setRequestError('Service prices or availability could not be verified. Return to your cart and try again after the catalogue loads.')
+      return
+    }
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors)
       setRequestError('Please review the highlighted fields.')
@@ -49,23 +53,7 @@ function CheckoutPage({ onNavigate, onOrderCreated }) {
     setRequestError('')
     try {
       const { data, error } = await supabase.functions.invoke('create-guest-order', {
-        body: {
-          customer: {
-            full_name: form.full_name.trim(),
-            email: form.email.trim(),
-            country_code: form.country_code.trim(),
-            phone_number: form.phone_number.trim(),
-          },
-          billing_address: {
-            address_line_1: form.address_line_1.trim(),
-            address_line_2: form.address_line_2.trim() || null,
-            city: form.city.trim(),
-            state: form.state.trim(),
-            postal_code: form.postal_code.trim() || null,
-            country: form.country.trim(),
-          },
-          items: items.map(({ id, quantity }) => ({ service_id: id, quantity })),
-        },
+        body: buildGuestOrderPayload(form, items),
       })
       if (error) throw error
       const order = data?.order ?? data
@@ -75,7 +63,7 @@ function CheckoutPage({ onNavigate, onOrderCreated }) {
         && order?.[field] !== undefined
         && Number.isFinite(Number(order[field]))
       ))
-      if (!order?.order_number || !hasServerTotals || order.payment_status !== 'pending' || !Array.isArray(serverItems)) {
+      if (!order?.order_number || !hasServerTotals || !isSupportedCurrency(order.currency) || order.payment_status !== 'pending' || !Array.isArray(serverItems)) {
         throw new Error('The order service returned incomplete confirmation details.')
       }
       const confirmationItems = serverItems.map((item, index) => ({
@@ -125,7 +113,7 @@ function CheckoutPage({ onNavigate, onOrderCreated }) {
           <section className="commerce-empty" role="status"><h2>Verifying your cart…</h2></section>
         ) : catalogError ? (
           <section className="commerce-empty" role="alert"><h2>Service details unavailable.</h2><p>We cannot verify which services may be checked out.</p><button className="button button--outline" type="button" onClick={retryCatalog}>Try again</button></section>
-        ) : !items.every((item) => isCartServiceEligible(item, services)) ? (
+        ) : !currencyConsistent || !pricesVerified || !items.every((item) => isCartServiceEligible(item, services)) ? (
           <section className="commerce-empty" role="alert"><h2>Cart needs an update.</h2><p>Only active fixed-price services can proceed to checkout. Remove other services from your cart.</p><a className="button button--primary" href="/cart" onClick={(event) => onNavigate?.(event, '/cart')}>Review cart <span aria-hidden="true">↗</span></a></section>
         ) : (
           <div className="checkout-layout">
@@ -152,8 +140,8 @@ function CheckoutPage({ onNavigate, onOrderCreated }) {
             </form>
             <aside className="cart-summary checkout-summary" aria-label="Order summary">
               <p className="eyebrow">Order summary</p>
-              {items.map((item) => <div className="checkout-summary__item" key={item.id}><span>{item.name} × {item.quantity}</span><strong>{usd(item.unitPrice * item.quantity)}</strong></div>)}
-              <div className="checkout-summary__subtotal"><span>Cart subtotal estimate</span><strong>{usd(subtotal)}</strong></div>
+              {items.map((item) => <div className="checkout-summary__item" key={item.id}><span>{item.name} × {item.quantity}</span><strong>{formatCurrency(item.unitPrice * item.quantity, item.currency)}</strong></div>)}
+              <div className="checkout-summary__subtotal"><span>Cart subtotal estimate</span><strong>{formatCurrency(subtotal, currency)}</strong></div>
               <p>The server will recalculate prices and totals from the service catalogue.</p>
             </aside>
           </div>

@@ -1,15 +1,11 @@
 import SiteHeader from '../components/SiteHeader.jsx'
 import { SiteFooter } from '../components/BusinessSections.jsx'
 import { useCart } from '../cart/CartContext.jsx'
-import { useCatalog } from '../services/CatalogContext.jsx'
-import { isCartServiceEligible } from '../services/serviceContact.js'
-
-const usd = (amount) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+import { formatCurrency } from '../services/pricing.js'
 
 function CartPage({ onNavigate }) {
-  const { items, itemCount, subtotal, setQuantity, removeItem, clearCart } = useCart()
-  const { services, loading: catalogLoading, error: catalogError } = useCatalog()
-  const canCheckout = !catalogLoading && !catalogError && items.length > 0 && items.every((item) => isCartServiceEligible(item, services))
+  const { items, itemCount, subtotal, currency, currencyConsistent, pricesVerified, catalogLoading, catalogError, setQuantity, removeItem, clearCart } = useCart()
+  const canCheckout = pricesVerified && currencyConsistent && items.length > 0
 
   const confirmClear = () => {
     if (window.confirm('Clear all services from your cart?')) clearCart()
@@ -38,14 +34,14 @@ function CartPage({ onNavigate }) {
                 <article className="cart-line" key={item.id}>
                   <div className="cart-line__info">
                     <h2>{item.name}</h2>
-                    <p>{usd(item.unitPrice)} <span>per service</span></p>
+                    <p>{!catalogLoading && !catalogError && item.available && item.priceVerified ? formatCurrency(item.unitPrice, item.currency) : catalogLoading ? 'Verifying price…' : 'Price unavailable'} <span>{!catalogLoading && !catalogError && item.available && item.priceVerified ? 'per service' : item.unavailableReason || 'unverified'}</span></p>
                   </div>
                   <div className="cart-line__quantity" aria-label={`Quantity for ${item.name}`}>
                     <button type="button" onClick={() => setQuantity(item.id, item.quantity - 1)} aria-label={`Decrease ${item.name} quantity`} disabled={item.quantity <= 1}>−</button>
                     <span aria-live="polite">{item.quantity}</span>
-                    <button type="button" onClick={() => setQuantity(item.id, item.quantity + 1)} aria-label={`Increase ${item.name} quantity`} disabled={!item.quantityAllowed || (item.maxQuantity != null && item.quantity >= item.maxQuantity)}>+</button>
+                    <button type="button" onClick={() => setQuantity(item.id, item.quantity + 1)} aria-label={`Increase ${item.name} quantity`} disabled={!item.priceVerified || !item.available || !item.quantityAllowed || (item.maxQuantity != null && item.quantity >= item.maxQuantity)}>+</button>
                   </div>
-                  <strong className="cart-line__total">{usd(item.unitPrice * item.quantity)}</strong>
+                  <strong className="cart-line__total">{!catalogLoading && !catalogError && item.available && item.priceVerified ? formatCurrency(item.unitPrice * item.quantity, item.currency) : '—'}</strong>
                   <button className="cart-line__remove" type="button" onClick={() => removeItem(item.id)}>Remove</button>
                 </article>
               ))}
@@ -57,11 +53,12 @@ function CartPage({ onNavigate }) {
 
             <aside className="cart-summary" aria-label="Cart summary">
               <p className="eyebrow">Summary</p>
-              <div><span>Subtotal</span><strong>{usd(subtotal)}</strong></div>
+              <div><span>Subtotal</span><strong>{pricesVerified && currencyConsistent ? formatCurrency(subtotal, currency) : '—'}</strong></div>
               <p>Final order totals are confirmed by the server at checkout.</p>
               {catalogLoading && <p role="status">Verifying service prices…</p>}
-              {catalogError && <p role="alert">Service details could not be verified. Checkout is unavailable until the catalogue loads.</p>}
-              {!catalogLoading && !catalogError && !canCheckout && <p role="alert">Remove services that are no longer active or are not fixed-price before checkout.</p>}
+              {catalogError && <p role="alert">Service prices could not be verified. Saved prices are hidden and checkout is unavailable until the catalogue loads.</p>}
+              {!catalogLoading && !catalogError && !currencyConsistent && <p role="alert">Cart items use different currencies. Checkout is unavailable; no currency conversion is applied.</p>}
+              {!catalogLoading && !catalogError && currencyConsistent && !canCheckout && <p role="alert">Some saved services are unavailable or cannot be purchased at a fixed price. Remove those lines to continue.</p>}
               {canCheckout
                 ? <a className="button button--primary" href="/checkout" onClick={(event) => onNavigate?.(event, '/checkout')}>Proceed to checkout <span aria-hidden="true">↗</span></a>
                 : <button className="button button--primary" type="button" disabled>Proceed to checkout</button>}

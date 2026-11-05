@@ -8,6 +8,7 @@ const fixedService = (id, name, unitPrice = 125) => ({
   id,
   name,
   unitPrice,
+  currency: 'USD',
   pricingType: 'fixed',
   quantityAllowed: true,
   maxQuantity: 5,
