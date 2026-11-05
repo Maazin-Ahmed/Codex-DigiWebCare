@@ -277,24 +277,6 @@ export const serviceCatalog = [
     benefits: ['In-depth business analysis', 'Strategy development', 'Implementation support'],
     packages: [{ name: 'Business Consulting', price: 'Custom quote', features: ['In-depth business analysis', 'Strategy development', 'Implementation support'] }],
   },
-  {
-    name: 'Animation and Trademark Services',
-    slug: 'animation-trademark-services',
-    scope: 'Explainer videos, 2D/3D animation, motion graphics, trademark search, and filing support.',
-    price: '$1,000–$2,500',
-    visual: 'transformation',
-    heroVisual: 'animation',
-    headline: 'Bring your brand to life — and protect it.',
-    paragraphs: [
-      'DigiCare Web describes animation services for explainers, 2D and 3D work, and motion graphics designed to communicate a brand story.',
-      'The same page describes trademark search, registration, filing support, and protection guidance for brand identity.',
-    ],
-    benefits: ['Custom animation creation', 'Scriptwriting and storyboarding', 'Trademark search and analysis', 'Filing and registration support'],
-    packages: [
-      { name: 'Animation', price: '$2,500', features: ['Custom animation creation', 'Scriptwriting and storyboarding', 'Voiceover if needed'] },
-      { name: 'Trademark Registration', price: '$1,000', features: ['Trademark search and analysis', 'Filing and registration support', 'Trademark protection guidance'] },
-    ],
-  },
 ]
 
 export const faqItems = [
